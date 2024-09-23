@@ -12,7 +12,7 @@ class ObjectManager:
     objectsDict = dict()
     count = 0
 
-    def update(self, map: Coord):
+    def update(self, map: Grid):
         for object in self.objectsDict.values():
             print(object.x, object.y)
             self.placeObject(map, object)
@@ -22,7 +22,7 @@ class ObjectManager:
         self.objectsDict[self.count] = o
         self.count += 1
 
-    def placeObject(self, map: Coord, object: Object):
+    def placeObject(self, map: Grid, object: Object):
         map.coord[object.x][object.y] = object.shape
     
     def deleteObject(self, id):
