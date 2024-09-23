@@ -16,19 +16,19 @@ def gameLoop():
 
 def on_press(key):
     try:
+        Map.coord[mObjectManager.objectsDict[0].x][mObjectManager.objectsDict[0].y] = '0'
         if key.char == "w":
-            print("w")
-            Map.coord[mObjectManager.objectsDict[0].x][mObjectManager.objectsDict[0].y] = '0'
-            mObjectManager.objectsDict[0].y -= 1 
+            if mObjectManager.objectsDict[0].y - 1 >= 0:
+                mObjectManager.objectsDict[0].y -= 1 
         if key.char == "s":
-            Map.coord[mObjectManager.objectsDict[0].x][mObjectManager.objectsDict[0].y] = '0'
-            mObjectManager.objectsDict[0].y += 1
+            if Map.y > mObjectManager.objectsDict[0].y + 1:
+                mObjectManager.objectsDict[0].y += 1
         if key.char == "a":
-            Map.coord[mObjectManager.objectsDict[0].x][mObjectManager.objectsDict[0].y] = '0'
-            mObjectManager.objectsDict[0].x -= 1 
+            if mObjectManager.objectsDict[0].x - 1 >= 0:
+                mObjectManager.objectsDict[0].x -= 1 
         if key.char == "d":
-            Map.coord[mObjectManager.objectsDict[0].x][mObjectManager.objectsDict[0].y] = '0'
-            mObjectManager.objectsDict[0].x += 1 
+            if Map.x > mObjectManager.objectsDict[0].x + 1:
+                mObjectManager.objectsDict[0].x += 1 
         if key.char == " ":
             pass
     except AttributeError:
@@ -49,7 +49,7 @@ def keyboardLoop():
 if __name__ == "__main__":
     Map = Coord(10, 10)
     mObjectManager = ObjectManager() 
-    mObjectManager.createObject(1, 5, 'Z')
+    mObjectManager.createObject(1, 5, '\033[91mZ\033[0m')
     mObjectManager.placeObject(Map, mObjectManager.objectsDict[0])
     Map.coord[4][5] = 'A'
     
