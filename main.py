@@ -19,15 +19,15 @@ def on_press(key):
         if key.char == "w":
             print("w")
             Map.coord[mObjectManager.objectsDict[0].x][mObjectManager.objectsDict[0].y] = '0'
-            mObjectManager.objectsDict[0].y -= 10 
+            mObjectManager.objectsDict[0].y -= 1 
         if key.char == "s":
             Map.coord[mObjectManager.objectsDict[0].x][mObjectManager.objectsDict[0].y] = '0'
-            mObjectManager.objectsDict[0].y += 10 
+            mObjectManager.objectsDict[0].y += 1
         if key.char == "a":
-            #Map.coord[mObjectManager.objectsDict[0].x][mObjectManager.objectsDict[0].y] = '0'
+            Map.coord[mObjectManager.objectsDict[0].x][mObjectManager.objectsDict[0].y] = '0'
             mObjectManager.objectsDict[0].x -= 1 
         if key.char == "d":
-            #Map.coord[mObjectManager.objectsDict[0].x][mObjectManager.objectsDict[0].y] = '0'
+            Map.coord[mObjectManager.objectsDict[0].x][mObjectManager.objectsDict[0].y] = '0'
             mObjectManager.objectsDict[0].x += 1 
         if key.char == " ":
             pass

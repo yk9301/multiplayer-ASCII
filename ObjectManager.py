@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from  Coord import *
+from Coord import *
 
 @dataclass
 class Object:
