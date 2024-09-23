@@ -6,6 +6,9 @@ from ObjectManager import *
 from Cursor import Cursor
 
 #import paho.mqtt.client as mqtt
+from subscriber import *
+from publisher import *
+import paho.mqtt.client as mqtt
 
 
 
@@ -32,8 +35,11 @@ def on_press(key):
         if key.char == "d":
             if Map.x > mObjectManager.objectsDict[0].x + 1:
                 mObjectManager.objectsDict[0].x += 1
-        if key.char == " ":
-            pass
+    
+        
+        if debug != False:
+            # place for publisher function call
+            publisher(str(mObjectManager.objectsDict[0].x)+ ',' +str(mObjectManager.objectsDict[0].y) + ',' +mObjectManager.objectsDict[0].shape + ';')
     except AttributeError:
         print('special key {0} pressed'.format(key))
 
@@ -51,18 +57,32 @@ def keyboardLoop():
 
 if __name__ == "__main__":
     os.system("")
+
+    # object init
     Map = Grid(10, 10)
     mObjectManager = ObjectManager()
     mObjectManager.createObject(1, 5, '\033[91mZ\033[0m')
     mObjectManager.placeObject(Map, mObjectManager.objectsDict[0])
-    Map.coord[4][5] = 'A'
-    
+    Map.coord[4][5] = '\033[92mA\033[0m'
 
+    debug = True
+
+    if debug != False:
+        # network connection
+        broker_address = "192.168.86.72"  
+        client = mqtt.Client(client_id="Publisher", protocol=mqtt.MQTTv311)
+        client.connect(broker_address, 1883, 60)
+
+    # multithreading start
     t1 = threading.Thread(target=gameLoop)
     t2 = threading.Thread(target=keyboardLoop)
     
+    if debug != False:
+        t3 = threading.Thread(target=subscriber)
+    
     t1.start()
     t2.start()
+    t3.start()
 
     
     
