@@ -2,6 +2,7 @@ from dataclasses import dataclass
 import time, threading
 from pynput import keyboard
 from ObjectManager import *
+
 #import paho.mqtt.client as mqtt
 
 
@@ -10,12 +11,13 @@ def gameLoop():
     while True:
         print(Map)
         mObjectManager.update(Map)
-        time.sleep(1)
+        time.sleep(0.01)
 
 
 def on_press(key):
     try:
         if key.char == "w":
+            print("w")
             Map.coord[mObjectManager.objectsDict[0].x][mObjectManager.objectsDict[0].y] = '0'
             mObjectManager.objectsDict[0].y -= 10 
         if key.char == "s":
@@ -38,7 +40,7 @@ def on_release(key):
     if key == keyboard.Key.esc:
         # Stop listener
         return False
-
+    
 def keyboardLoop():
     # Collect events until released
     with keyboard.Listener(on_press=on_press,on_release=on_release) as listener:
@@ -48,7 +50,7 @@ def keyboardLoop():
 if __name__ == "__main__":
     Map = Coord(10, 10)
     mObjectManager = ObjectManager() 
-    mObjectManager.createObject(0, 5, 'Z')
+    mObjectManager.createObject(1, 5, 'Z')
     mObjectManager.placeObject(Map, mObjectManager.objectsDict[0])
     Map.coord[4][5] = 'A'
     
