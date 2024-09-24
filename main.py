@@ -100,8 +100,8 @@ def on_message(client, userdata, msg):
 
 if __name__ == "__main__":
     mObjectManager = ObjectManager() 
-    mObjectManager.create_object(1, 5, '\033[91mZ\033[0m')
-    mObjectManager.create_object(0,0,'\033[94mX\033[0m')
+    mObjectManager.create_object(1, 5, '\033[91mT\033[0m')
+    mObjectManager.create_object(0,0,'\033[94mY\033[0m')
     mObjectManager.create_object(9,9, '\033[93mK\033[0m')
 
     # object id to play
