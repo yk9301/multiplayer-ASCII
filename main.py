@@ -6,7 +6,7 @@ from Cursor import Cursor
 from publisher import *
 import paho.mqtt.client as mqtt
 
-DEBUG = False
+DEBUG = True
 
 
 def game_loop():
@@ -17,20 +17,21 @@ def game_loop():
 
 
 def on_press(key):
-    match key.char:
-        case "w":
-            mObjectManager.move_object(player, 0, -1)
-        case "s":
-            mObjectManager.move_object(player, 0, 1)
-        case "a":
-            mObjectManager.move_object(player, -1, 0)
-        case "d":
-            mObjectManager.move_object(player, 1, 0)
-        case" ":
-            pass
-        case _:
-            assert False, "ERROR: AttributeError: unexpected key {key} was pressed".format(key=key.char)
-            
+    try:
+        match key.char:
+            case "w":
+                mObjectManager.move_object(player, 0, -1)
+            case "s":
+                mObjectManager.move_object(player, 0, 1)
+            case "a":
+                mObjectManager.move_object(player, -1, 0)
+            case "d":
+                mObjectManager.move_object(player, 1, 0)
+    except AttributeError:
+        print('special key {0} pressed'.format(key))
+        if '{0}'.format(key) == 'Key.enter':
+            os._exit(0)
+
     if not DEBUG:
             # place for publisher function call
             publisher(str(mObjectManager.objectsDict[player].x)+ ',' +str(mObjectManager.objectsDict[player].y) + ',' + str(mObjectManager.objectsDict[player].id) + ';')
@@ -118,10 +119,10 @@ if __name__ == "__main__":
     
     if not DEBUG:
         t3 = threading.Thread(target=subscriber)
+        t3.start()
     
     t1.start()
     t2.start()
-    t3.start()
 
     
     
