@@ -35,8 +35,8 @@ class ObjectManager:
         if not is_deleted:
             assert False, "ERROR: Attempt to delete an object that is not in objectsDict."
 
-    def move_object(self, object_or_id: Object | int, down, right):
-        """down and right are relative coordinates. right = 1 means obj.x += 1"""
+    def move_object(self, object_or_id: Object | int, right, down):
+        """down and right are relative coordinates. right = 2 means obj.x += 2"""
         if object_or_id is Object:
             obj = object_or_id
         else:
@@ -46,3 +46,9 @@ class ObjectManager:
         self.world[(obj.x, obj.y)] = self.world.default_char
         obj.x, obj.y = min(max(obj.x + right, 0), self.world_size - 1), min(max(obj.y + down, 0), self.world_size - 1)
         self.world[(obj.x, obj.y)] = obj.shape
+
+    def get_pos(self, object_or_id):
+        """A tuple is returned, unpack with: x, y = get_pos(object_or_id)"""
+        if object_or_id is Object:
+            return object_or_id.x, object_or_id.y
+        return self.objectsDict[id].x, self.objectsDict[id].y

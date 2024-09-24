@@ -11,7 +11,7 @@ def gameLoop():
     cursor = Cursor()
     while True:
         cursor.print(mObjectManager.world)
-        time.sleep(1)
+        time.sleep(0.01)
 
 
 def on_press(key):

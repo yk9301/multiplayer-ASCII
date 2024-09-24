@@ -2,12 +2,13 @@ import os
 from dataclasses import dataclass
 from ANSIEscapeSequences import *
 from Coord import Grid
+from ObjectManager import *
 
 @dataclass
 class Cursor:
     x: int = None
     y: int = None
-
+    mObjectManager: ObjectManager = None
     def __init__(self):
         self.reset()
 
