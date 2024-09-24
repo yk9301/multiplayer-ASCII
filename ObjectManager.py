@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from Coord import *
 WORLD_SIZE = 10
 

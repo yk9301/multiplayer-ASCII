@@ -9,7 +9,9 @@ class Cursor:
     x: int = None
     y: int = None
     mObjectManager: ObjectManager = None
-    def __init__(self):
+
+    def __init__(self, object_manager):
+        self.mObjectManager = object_manager
         self.reset()
 
     def reset(self):
