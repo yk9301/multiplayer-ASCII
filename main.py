@@ -87,7 +87,6 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, msg):
     message = msg.payload.decode()
     topic = msg.topic
-    print(f"Nachricht empfangen: Thema: {topic}, Nachricht: {message}")
     
     # Aktion basierend auf der Nachricht ausführen
     if topic == "update":
@@ -100,7 +99,7 @@ def on_message(client, userdata, msg):
 
 if __name__ == "__main__":
     mObjectManager = ObjectManager() 
-    mObjectManager.create_object(1, 5, '\033[91mT\033[0m')
+    mObjectManager.create_object(0, 9, '\033[91mT\033[0m')
     mObjectManager.create_object(0,0,'\033[94mY\033[0m')
     mObjectManager.create_object(9,9, '\033[93mK\033[0m')
 
