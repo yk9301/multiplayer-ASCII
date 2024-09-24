@@ -18,13 +18,13 @@ def game_loop():
 def on_press(key):
     match key.char:
         case "w":
-            mObjectManager.move_object(0, 0, -1)
+            mObjectManager.move_object(player, 0, -1)
         case "s":
-            mObjectManager.move_object(0, 0, 1)
+            mObjectManager.move_object(player, 0, 1)
         case "a":
-            mObjectManager.move_object(0, -1, 0)
+            mObjectManager.move_object(player, -1, 0)
         case "d":
-            mObjectManager.move_object(0, 1, 0)
+            mObjectManager.move_object(player, 1, 0)
         case" ":
             pass
         case _:
@@ -32,7 +32,7 @@ def on_press(key):
             
     if not DEBUG:
             # place for publisher function call
-            publisher(str(mObjectManager.objectsDict[0].x)+ ',' +str(mObjectManager.objectsDict[0].y) + ',' + str(mObjectManager.objectsDict[0].id) + ';')
+            publisher(str(mObjectManager.objectsDict[player].x)+ ',' +str(mObjectManager.objectsDict[player].y) + ',' + str(mObjectManager.objectsDict[player].id) + ';')
 
 
 def on_release(key):
@@ -90,18 +90,20 @@ def on_message(client, userdata, msg):
     
     # Aktion basierend auf der Nachricht ausführen
     if topic == "update":
-        x = int(message[0])  
+        x = int(message[0])
         y = int(message[2])
         id = int(message[4:-1])
-        print(message * 100)
-        mObjectManager.objectsDict[id].x = x
-        mObjectManager.objectsDict[id].y = y
-        #mObjectManager.move_object(id,x - mObjectManager.objectsDict[id].x, y - mObjectManager.objectsDict[id].y)
+        
+        mObjectManager.move_object(id,x - mObjectManager.objectsDict[id].x, y - mObjectManager.objectsDict[id].y)
         
 
 if __name__ == "__main__":
     mObjectManager = ObjectManager() 
     mObjectManager.create_object(1, 5, '\033[91mZ\033[0m')
+    mObjectManager.create_object(0,0,'\033[94mX\033[0m')
+
+    # object id to play
+    player = 1
 
     if not DEBUG:
         # network connection
