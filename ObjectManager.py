@@ -38,7 +38,7 @@ class ObjectManager:
         if not is_deleted:
             assert False, "ERROR: Attempt to delete an object that is not in objectsDict."
 
-    def move_object(self, object_or_id: Object | int, right, down):
+    def move_object(self, object_or_id: Object | int, right, down, relative=True):
         """down and right are relative coordinates. right = 2 means obj.x += 2"""
         if object_or_id is Object:
             obj = object_or_id
@@ -50,8 +50,14 @@ class ObjectManager:
         # Place '0' where the object used to be - add to draw queue
         self.world[(obj.x, obj.y)] = self.world.default_char
         self.queue.put((obj.x, obj.y))
+
         # Update Object position
-        obj.x, obj.y = min(max(obj.x + right, 0), self.world_size - 1), min(max(obj.y + down, 0), self.world_size - 1)
+        if relative:
+            x, y = obj.x + right, obj.y + down
+        else:
+            x, y = right, down
+        obj.x, obj.y = min(max(x, 0), self.world_size - 1), min(max(y, 0), self.world_size - 1)
+
         # Place obj.shape where object should go - add to draw queue
         self.world[(obj.x, obj.y)] = obj.shape
         self.queue.put((obj.x, obj.y))
