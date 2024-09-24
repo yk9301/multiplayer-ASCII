@@ -87,7 +87,10 @@ def on_message(client, userdata, msg):
     
     # Aktion basierend auf der Nachricht ausführen
     if topic == "update":
-        print(message)
+        x = int(message[0])
+        y = int(message[1])
+        id = int(message[2])
+        mObjectManager.move_object(id, y - mObjectManager.objectsDict[id].y, x - mObjectManager.objectsDict[id].x)
         
 
 
