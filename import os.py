@@ -10,3 +10,5 @@ COLOR = {
 }
 
 print(COLOR["GREEN"], "Testing Green!!", COLOR["ENDC"])
+a = "1,2,30;"
+print(int(a[0]), int(a[2]), int(a[4:-1]))

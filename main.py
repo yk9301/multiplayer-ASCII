@@ -31,7 +31,7 @@ def on_press(key):
             
     if debug != False:
             # place for publisher function call
-            publisher(str(mObjectManager.objectsDict[0].x)+ ',' +str(mObjectManager.objectsDict[0].y) + ',' +mObjectManager.objectsDict[0].id + ';')
+            publisher(str(mObjectManager.objectsDict[0].x)+ ',' +str(mObjectManager.objectsDict[0].y) + ',' + str(mObjectManager.objectsDict[0].id) + ';')
 
 
 def on_release(key):
@@ -87,9 +87,9 @@ def on_message(client, userdata, msg):
     
     # Aktion basierend auf der Nachricht ausführen
     if topic == "update":
-        x = int(message[0])
-        y = int(message[1])
-        id = int(message[2])
+        x = int(message[0])  
+        y = int(message[2])
+        id = int(message[4:-1])
         mObjectManager.move_object(id, y - mObjectManager.objectsDict[id].y, x - mObjectManager.objectsDict[id].x)
         
 
