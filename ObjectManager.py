@@ -1,4 +1,5 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
+from queue import SimpleQueue
 from Coord import *
 WORLD_SIZE = 10
 
@@ -17,6 +18,7 @@ class ObjectManager:
     total_objects = 0  # is used for the id, ids are always unique and never re-used.
     world_size = WORLD_SIZE
     world = Grid(WORLD_SIZE, WORLD_SIZE)
+    queue = SimpleQueue()
 
     def __init__(self):
         world = Grid(self.world_size, self.world_size)
@@ -26,6 +28,7 @@ class ObjectManager:
         self.total_objects += 1
         self.objectsDict[obj.id] = obj
         self.world[(x, y)] = obj.shape
+        self.queue.put((x, y))
 
     def delete_object(self, object_or_id):
         if object_or_id is Object:
@@ -43,12 +46,21 @@ class ObjectManager:
             if object_or_id not in self.objectsDict:
                 assert False, "ERROR: Attempt to move an object that is not in objectsDict."
             obj = self.objectsDict[object_or_id]
+
+        # Place '0' where the object used to be - add to draw queue
         self.world[(obj.x, obj.y)] = self.world.default_char
+        self.queue.put((obj.x, obj.y))
+        # Update Object position
         obj.x, obj.y = min(max(obj.x + right, 0), self.world_size - 1), min(max(obj.y + down, 0), self.world_size - 1)
+        # Place obj.shape where object should go - add to draw queue
         self.world[(obj.x, obj.y)] = obj.shape
+        self.queue.put((obj.x, obj.y))
 
     def get_pos(self, object_or_id):
         """A tuple is returned, unpack with: x, y = get_pos(object_or_id)"""
         if object_or_id is Object:
             return object_or_id.x, object_or_id.y
         return self.objectsDict[id].x, self.objectsDict[id].y
+
+    def dequeue(self):
+        return self.queue.get()
