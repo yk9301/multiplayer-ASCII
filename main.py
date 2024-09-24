@@ -54,7 +54,7 @@ def subscriber():
     logging.basicConfig(level=logging.DEBUG)
 
     # Client initialisieren
-    client = mqtt.Client(client_id="subscriber1", protocol=mqtt.MQTTv311)
+    client = mqtt.Client(client_id="subscriber0", protocol=mqtt.MQTTv311)
     client.enable_logger()
 
     # Broker-Adresse und Port
@@ -104,7 +104,7 @@ if __name__ == "__main__":
     mObjectManager.create_object(9,9, '\033[93mK\033[0m')
 
     # object id to play
-    player = 1
+    player = 0
 
     if not DEBUG:
         # network connection
