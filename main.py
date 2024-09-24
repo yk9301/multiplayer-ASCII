@@ -3,6 +3,7 @@ import os, time, threading, logging
 from pynput import keyboard
 from ObjectManager import *
 from Cursor import Cursor
+from GameObjects import *
 from publisher import *
 import paho.mqtt.client as mqtt
 
@@ -54,7 +55,7 @@ def subscriber():
     logging.basicConfig(level=logging.DEBUG)
 
     # Client initialisieren
-    client = mqtt.Client(client_id="subscriber0", protocol=mqtt.MQTTv311)
+    client = mqtt.Client(client_id="subscriber1", protocol=mqtt.MQTTv311)
     client.enable_logger()
 
     # Broker-Adresse und Port
@@ -99,17 +100,18 @@ def on_message(client, userdata, msg):
 
 if __name__ == "__main__":
     mObjectManager = ObjectManager() 
-    mObjectManager.create_object(0, 9, '\033[91mT\033[0m')
-    mObjectManager.create_object(0,0,'\033[94mY\033[0m')
-    mObjectManager.create_object(9,9, '\033[93mK\033[0m')
+    mObjectManager.create_object(0, 9, Player)
+    mObjectManager.create_object(0,0, Player)
+    mObjectManager.create_object(9,9, Player)
+    mObjectManager.create_object(5,5, Wall)
 
     # object id to play
-    player = 0
+    player = 1
 
     if not DEBUG:
         # network connection
         broker_address = "192.168.86.72"  
-        client = mqtt.Client(client_id="Publisher", protocol=mqtt.MQTTv311)
+        client = mqtt.Client(client_id="Publisher1", protocol=mqtt.MQTTv311)
         client.connect(broker_address, 1883, 60)
 
     # multithreading start

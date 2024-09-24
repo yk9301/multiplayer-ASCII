@@ -8,8 +8,8 @@ WORLD_SIZE = 10
 class Object:
     x: int
     y: int
-    shape: str
     id: int
+    shape = None
 
 
 @dataclass
@@ -23,8 +23,8 @@ class ObjectManager:
     def __init__(self):
         world = Grid(self.world_size, self.world_size)
 
-    def create_object(self, x, y, shape):
-        obj = Object(x, y, shape, self.total_objects)
+    def create_object(self, x, y, datatype):
+        obj = datatype(x, y, self.total_objects)
         self.total_objects += 1
         self.objectsDict[obj.id] = obj
         self.world[(x, y)] = obj.shape
