@@ -7,37 +7,32 @@ from publisher import *
 import paho.mqtt.client as mqtt
 
 
-
 def gameLoop():
     cursor = Cursor()
     while True:
-        cursor.print(Map)
-        mObjectManager.update(Map)
-        time.sleep(0.1)
+        cursor.print(mObjectManager.world)
+        time.sleep(1)
 
 
 def on_press(key):
-    try:
-        Map.coord[mObjectManager.objectsDict[0].x][mObjectManager.objectsDict[0].y] = '0'
-        if key.char == "w":
-            if mObjectManager.objectsDict[0].y - 1 >= 0:
-                mObjectManager.objectsDict[0].y -= 1
-        if key.char == "s":
-            if Map.y > mObjectManager.objectsDict[0].y + 1:
-                mObjectManager.objectsDict[0].y += 1
-        if key.char == "a":
-            if mObjectManager.objectsDict[0].x - 1 >= 0:
-                mObjectManager.objectsDict[0].x -= 1
-        if key.char == "d":
-            if Map.x > mObjectManager.objectsDict[0].x + 1:
-                mObjectManager.objectsDict[0].x += 1
-    
-        
-        if debug != False:
+    match key.char:
+        case "w":
+            mObjectManager.move_object(0, 0, -1)
+        case "s":
+            mObjectManager.move_object(0, 0, 1)
+        case "a":
+            mObjectManager.move_object(0, -1, 0)
+        case "d":
+            mObjectManager.move_object(0, 1, 0)
+        case" ":
+            pass
+        case _:
+            assert False, "ERROR: AttributeError: unexpected key {key} was pressed".format(key=key.char)
+            
+    if debug != False:
             # place for publisher function call
             publisher(str(mObjectManager.objectsDict[0].x)+ ',' +str(mObjectManager.objectsDict[0].y) + ',' +mObjectManager.objectsDict[0].shape + ';')
-    except AttributeError:
-        print('special key {0} pressed'.format(key))
+
 
 def on_release(key):
     # print('{0} released'.format(key))
@@ -47,7 +42,7 @@ def on_release(key):
 
 def keyboardLoop():
     # Collect events until released
-    with keyboard.Listener(on_press=on_press,on_release=on_release) as listener:
+    with keyboard.Listener(on_press=on_press, on_release=on_release) as listener:
         listener.join()
 
 def subscriber():
@@ -98,14 +93,8 @@ def on_message(client, userdata, msg):
 
 
 if __name__ == "__main__":
-    os.system("")
-
-    # object init
-    Map = Grid(10, 10)
-    mObjectManager = ObjectManager()
-    mObjectManager.createObject(1, 5, '\033[91mZ\033[0m')
-    mObjectManager.placeObject(Map, mObjectManager.objectsDict[0])
-    Map.coord[4][5] = '\033[92mA\033[0m'
+    mObjectManager = ObjectManager() 
+    mObjectManager.create_object(1, 5, '\033[91mZ\033[0m')
 
     debug = True
 
