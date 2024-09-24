@@ -1,12 +1,8 @@
 from dataclasses import dataclass
-import os
-import time, threading
+import os, time, threading, logging
 from pynput import keyboard
 from ObjectManager import *
 from Cursor import Cursor
-
-#import paho.mqtt.client as mqtt
-from subscriber import *
 from publisher import *
 import paho.mqtt.client as mqtt
 
@@ -17,7 +13,7 @@ def gameLoop():
     while True:
         cursor.print(Map)
         mObjectManager.update(Map)
-        time.sleep(0.01)
+        time.sleep(0.1)
 
 
 def on_press(key):
@@ -53,6 +49,52 @@ def keyboardLoop():
     # Collect events until released
     with keyboard.Listener(on_press=on_press,on_release=on_release) as listener:
         listener.join()
+
+def subscriber():
+    # Logging aktivieren für detaillierte Debug-Informationen
+    logging.basicConfig(level=logging.DEBUG)
+
+    # Client initialisieren
+    client = mqtt.Client(client_id="subscriber1", protocol=mqtt.MQTTv311)
+    client.enable_logger()
+
+    # Broker-Adresse und Port
+    broker_address = "192.168.86.72" 
+    port = 1883  # Standard-MQTT-Port
+
+    # callbacks
+    client.on_connect = on_connect
+    client.on_message = on_message
+
+    # try to connect
+    try:
+        client.connect(broker_address, port=port, keepalive=60)
+    except Exception as e:
+        print(f"Verbindungsfehler: {e}")
+        exit(1)
+
+    # loop
+    client.loop_forever()
+
+
+def on_connect(client, userdata, flags, rc):
+    if rc == 0:
+        print("Subscriber verbunden")
+        client.subscribe("update")  # subscribtion for specific subject
+    else:
+        print(f"Subscriber Verbindung fehlgeschlagen mit Code {rc}")
+
+
+def on_message(client, userdata, msg):
+    message = msg.payload.decode()
+    topic = msg.topic
+    print(f"Nachricht empfangen: Thema: {topic}, Nachricht: {message}")
+    
+    # Aktion basierend auf der Nachricht ausführen
+    if topic == "update":
+        print(message)
+        
+
 
 
 if __name__ == "__main__":
