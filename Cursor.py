@@ -39,7 +39,7 @@ class Cursor:
         self.x += 1
 
     def print(self, grid: Grid):
-        self.reset()
+        print(ESC.up(10) + ESC.start_of_line())
         for y in range(grid.y):
             for x in range(grid.x):
                 print(grid.coord[x][y], end=' ')
