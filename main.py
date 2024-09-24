@@ -31,7 +31,7 @@ def on_press(key):
             
     if debug != False:
             # place for publisher function call
-            publisher(str(mObjectManager.objectsDict[0].x)+ ',' +str(mObjectManager.objectsDict[0].y) + ',' +mObjectManager.objectsDict[0].shape + ';')
+            publisher(str(mObjectManager.objectsDict[0].x)+ ',' +str(mObjectManager.objectsDict[0].y) + ',' +mObjectManager.objectsDict[0].id + ';')
 
 
 def on_release(key):
