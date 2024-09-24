@@ -6,13 +6,13 @@ from Cursor import Cursor
 from publisher import *
 import paho.mqtt.client as mqtt
 
-DEBUG = True
+DEBUG = False
 
 def game_loop():
     cursor = Cursor(mObjectManager)
     while True:
         cursor.print(mObjectManager.world)
-        time.sleep(0.01)
+        time.sleep(0.001)
 
 
 def on_press(key):
@@ -93,7 +93,10 @@ def on_message(client, userdata, msg):
         x = int(message[0])  
         y = int(message[2])
         id = int(message[4:-1])
-        mObjectManager.move_object(id, y - mObjectManager.objectsDict[id].y, x - mObjectManager.objectsDict[id].x)
+        print(message * 100)
+        mObjectManager.objectsDict[id].x = x
+        mObjectManager.objectsDict[id].y = y
+        #mObjectManager.move_object(id,x - mObjectManager.objectsDict[id].x, y - mObjectManager.objectsDict[id].y)
         
 
 if __name__ == "__main__":
