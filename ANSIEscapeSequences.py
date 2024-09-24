@@ -49,6 +49,10 @@ class ESC:
         return f"\033[{n}C"
 
     @staticmethod
+    def start_of_line():
+        return "\r"
+
+    @staticmethod
     def go_home():
         return "\033[H"
 

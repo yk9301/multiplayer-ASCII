@@ -15,7 +15,7 @@ class Cursor:
         self.reset()
 
     def reset(self):
-        print(ESC.clear_screen())
+        print(ESC.up(10) + ESC.start_of_line())
         self.x, self.y = 0, 0
 
     def goto(self, x: int, y: int):
