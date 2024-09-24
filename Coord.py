@@ -3,7 +3,7 @@ DEFAULT_CHAR = "0"
 
 
 @dataclass
-class Coord:
+class Grid:
     x: int
     y: int
     coord = {}

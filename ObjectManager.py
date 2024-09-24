@@ -16,10 +16,10 @@ class ObjectManager:
     objectsDict = dict()
     total_objects = 0  # is used for the id, ids are always unique and never re-used.
     world_size = WORLD_SIZE
-    world = Coord(WORLD_SIZE, WORLD_SIZE)
+    world = Grid(WORLD_SIZE, WORLD_SIZE)
 
     def __init__(self):
-        world = Coord(self.world_size, self.world_size)
+        world = Grid(self.world_size, self.world_size)
 
     def create_object(self, x, y, shape):
         obj = Object(x, y, shape, self.total_objects)

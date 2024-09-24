@@ -14,9 +14,8 @@ import paho.mqtt.client as mqtt
 def gameLoop():
     cursor = Cursor()
     while True:
-        cursor.print(Map)
-        print(mObjectManager.world)
-        time.sleep(0.01)
+        cursor.print(mObjectManager.world)
+        time.sleep(1)
 
 
 def on_press(key):
