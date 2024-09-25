@@ -72,38 +72,38 @@ class ESC:
 
     @staticmethod
     def gray(string: str):
-        return Color["GRAY"] + string + DEFAULT_COLOR
+        return Color["GRAY"] + string + Color[DEFAULT_COLOR]
 
     @staticmethod
     def red(string: str):
-        return Color["RED"] + string + DEFAULT_COLOR
+        return Color["RED"] + string + Color[DEFAULT_COLOR]
 
     @staticmethod
     def green(string: str):
-        return Color["GREEN"] + string + DEFAULT_COLOR
+        return Color["GREEN"] + string + Color[DEFAULT_COLOR]
 
     @staticmethod
     def yellow(string: str):
-        return Color["YELLOW"] + string + DEFAULT_COLOR
+        return Color["YELLOW"] + string + Color[DEFAULT_COLOR]
     @staticmethod
     def blue(string: str):
-        return Color["BLUE"] + string + DEFAULT_COLOR
+        return Color["BLUE"] + string + Color[DEFAULT_COLOR]
 
     @staticmethod
     def magenta(string: str):
-        return Color["MAGENTA"] + string + DEFAULT_COLOR
+        return Color["MAGENTA"] + string + Color[DEFAULT_COLOR]
 
     @staticmethod
     def cyan(string: str):
-        return Color["CYAN"] + string + DEFAULT_COLOR
+        return Color["CYAN"] + string + Color[DEFAULT_COLOR]
 
     @staticmethod
     def white(string: str):
-        return Color["WHITE"] + string + DEFAULT_COLOR
+        return Color["WHITE"] + string + Color[DEFAULT_COLOR]
 
     @staticmethod
     def black(string: str):
-        return Color["BLACK"] + string + DEFAULT_COLOR
+        return Color["BLACK"] + string + Color[DEFAULT_COLOR]
 
     @staticmethod
     def up(n: int):
