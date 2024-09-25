@@ -103,6 +103,7 @@ def on_message(client, userdata, msg):
         
 
 if __name__ == "__main__":
+    print(ESC.invisible_cursor(), end="\r")
     mObjectManager = ObjectManager() 
     mObjectManager.create_object(0, 9, Player)
     mObjectManager.create_object(0,0, Player)
