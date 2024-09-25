@@ -104,10 +104,13 @@ def on_message(client, userdata, msg):
 
 if __name__ == "__main__":
     print(ESC.invisible_cursor(), end="\r")
-    mObjectManager = ObjectManager() 
-    mObjectManager.create_object(0, 9, Player)
-    mObjectManager.create_object(0,0, Player)
-    mObjectManager.create_object(9,9, Player)
+    mObjectManager = ObjectManager()
+    mObjectManager.world.coord = map_parser("map.txt")
+    mObjectManager.look_for_objects()
+     
+    mObjectManager.create_object(0, 9, Player,0)
+    mObjectManager.create_object(0,0, Player,1)
+    mObjectManager.create_object(9,9, Player,2)
     mObjectManager.create_object(5,5, Wall)
 
     # multithreading start
