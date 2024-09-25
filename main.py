@@ -6,15 +6,17 @@ from Cursor import Cursor
 from GameObjects import *
 from publisher import *
 import paho.mqtt.client as mqtt
+from ANSIEscapeSequences import ESC
 
 DEBUG = False
 PLAYER = 1
 
 def game_loop():
-    cursor = Cursor(mObjectManager)
+    cursor = Cursor()
+    cursor.reprint_whole_map(mObjectManager, same_position=False)
     while True:
-        cursor.print(mObjectManager.world)
-        time.sleep(0.001)
+        cursor.print_changes(mObjectManager)
+        time.sleep(0.01)
 
 
 def on_press(key):

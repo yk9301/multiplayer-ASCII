@@ -18,18 +18,19 @@ Color = {
     "RED": "\033[91m",
     "ENDC": "\033[0m",
 }
+
 @dataclass
 class ESC:
     @staticmethod
-    def red(string : str):
+    def red(string: str):
         return Color["RED"] + string + Color["ENDC"]
 
     @staticmethod
-    def green(string : str):
+    def green(string: str):
         return Color["GREEN"] + string + Color["ENDC"]
 
     @staticmethod
-    def blue(string : str):
+    def blue(string: str):
         return Color["BLUE"] + string + Color["ENDC"]
 
     @staticmethod
@@ -63,3 +64,28 @@ class ESC:
     @staticmethod
     def clear_line():
         return "\033[2K"
+
+    @staticmethod
+    def clear_until_end_of_screen():
+        return "\033[0J"
+
+    @staticmethod
+    def save_pos():
+        return "\0337"
+
+    @staticmethod
+    def load_pos():
+        return "\0338"
+
+    @staticmethod
+    def goto_pos(start_x: int, start_y: int, goal_x: int, goal_y: int):
+        res = ""
+        if start_x > goal_x:
+            res += ESC.left(start_x - goal_x)
+        if start_x < goal_x:
+            res += ESC.right(goal_x - start_x)
+        if start_y > goal_y:
+            res += ESC.up(start_y - goal_y)
+        if start_y < goal_y:
+            res += ESC.down(goal_y - start_y)
+        return res
