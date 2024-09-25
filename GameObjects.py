@@ -1,6 +1,7 @@
 from ANSIEscapeSequences import *
 from dataclasses import dataclass
 import time
+from ANSIEscapeSequences import ESC
 
 
 @dataclass
@@ -68,5 +69,5 @@ class Bomb(Object):
 @dataclass
 class Wall(Object):
     def __post_init__(self):
-        self.shape = '\033[90mx\033[0m'
+        self.shape = ESC.gray(ESC.blinking("x"))
 
