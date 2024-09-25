@@ -4,6 +4,7 @@
 __pycache__/
 test.py
 .vscode/
+map.txt
 *.py[cod]
 *$py.classs
 
