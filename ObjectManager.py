@@ -3,6 +3,7 @@ from queue import SimpleQueue
 from Coord import *
 
 WORLD_SIZE = 10
+gObjectManager = None
 
 
 @dataclass
@@ -22,7 +23,9 @@ class ObjectManager:
     queue = SimpleQueue()
 
     def __init__(self):
-        world = Grid(self.world_size, self.world_size)
+        self.world = Grid(self.world_size, self.world_size)
+        global gObjectManager
+        gObjectManager = self
 
     def create_object(self, x, y, datatype):
         obj = datatype(x, y, self.total_objects)
