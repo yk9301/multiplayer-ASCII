@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-DEFAULT_CHAR = "▢"
+DEFAULT_CHAR = "0"
 
 
 @dataclass

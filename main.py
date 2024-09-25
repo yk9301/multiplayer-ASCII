@@ -33,6 +33,7 @@ def on_press(key):
     except AttributeError:
         print('special key {0} pressed'.format(key))
         if '{0}'.format(key) == 'Key.enter':
+            print(ESC.visible_cursor())
             os._exit(0)
 
     if not DEBUG:
