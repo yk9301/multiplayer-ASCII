@@ -12,15 +12,24 @@ from dataclasses import dataclass
 # https://www.unicode.org/charts/PDF/U2600.pdf
 
 Color = {
-    "HEADER": "\033[95m",
-    "BLUE": "\033[94m",
-    "GREEN": "\033[92m",
+    "GRAY": "\033[90m",
     "RED": "\033[91m",
+    "GREEN": "\033[92m",
+    "YELLOW": "\033[93m",
+    "BLUE": "\033[94m",
+    "Magenta": "\033[95m",
+    "CYAN": "\033[96m",
+    "WHITE": "\033[97m",
+    "BLACK": "\033[30m",
     "ENDC": "\033[0m",
 }
 
 @dataclass
 class ESC:
+    @staticmethod
+    def gray(string: str):
+        return Color["GRAY"] + string + Color["ENDC"]
+
     @staticmethod
     def red(string: str):
         return Color["RED"] + string + Color["ENDC"]
@@ -30,8 +39,27 @@ class ESC:
         return Color["GREEN"] + string + Color["ENDC"]
 
     @staticmethod
+    def yellow(string: str):
+        return Color["YELLOW"] + string + Color["ENDC"]
+    @staticmethod
     def blue(string: str):
         return Color["BLUE"] + string + Color["ENDC"]
+
+    @staticmethod
+    def magenta(string: str):
+        return Color["MAGENTA"] + string + Color["ENDC"]
+
+    @staticmethod
+    def cyan(string: str):
+        return Color["CYAN"] + string + Color["ENDC"]
+
+    @staticmethod
+    def white(string: str):
+        return Color["WHITE"] + string + Color["ENDC"]
+
+    @staticmethod
+    def black(string: str):
+        return Color["BLACK"] + string + Color["ENDC"]
 
     @staticmethod
     def up(n: int):
@@ -89,3 +117,7 @@ class ESC:
         if start_y < goal_y:
             res += ESC.down(goal_y - start_y)
         return res
+
+    @staticmethod
+    def invisible_cursor():
+        return "\033[?25l"
