@@ -9,7 +9,6 @@ import paho.mqtt.client as mqtt
 
 DEBUG = True
 
-
 def game_loop():
     cursor = Cursor(mObjectManager)
     while True:

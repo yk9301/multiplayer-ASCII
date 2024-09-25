@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from queue import SimpleQueue
 from Coord import *
+
 WORLD_SIZE = 10
 
 
@@ -47,20 +48,24 @@ class ObjectManager:
                 assert False, "ERROR: Attempt to move an object that is not in objectsDict."
             obj = self.objectsDict[object_or_id]
 
-        # Place '0' where the object used to be - add to draw queue
-        self.world[(obj.x, obj.y)] = self.world.default_char
-        self.queue.put((obj.x, obj.y))
+        try:
+            if self.world.coord[obj.x + right][obj.y + down] == self.world.default_char:
+                # Place '0' where the object used to be - add to draw queue
+                self.world[(obj.x, obj.y)] = self.world.default_char
+                self.queue.put((obj.x, obj.y))
 
-        # Update Object position
-        if relative:
-            x, y = obj.x + right, obj.y + down
-        else:
-            x, y = right, down
-        obj.x, obj.y = min(max(x, 0), self.world_size - 1), min(max(y, 0), self.world_size - 1)
+                # Update Object position
+                if relative:
+                    x, y = obj.x + right, obj.y + down
+                else:
+                    x, y = right, down
+                obj.x, obj.y = min(max(x, 0), self.world_size - 1), min(max(y, 0), self.world_size - 1)
 
-        # Place obj.shape where object should go - add to draw queue
-        self.world[(obj.x, obj.y)] = obj.shape
-        self.queue.put((obj.x, obj.y))
+                # Place obj.shape where object should go - add to draw queue
+                self.world[(obj.x, obj.y)] = obj.shape
+                self.queue.put((obj.x, obj.y))
+        except KeyError:
+            pass
 
     def get_pos(self, object_or_id):
         """A tuple is returned, unpack with: x, y = get_pos(object_or_id)"""
