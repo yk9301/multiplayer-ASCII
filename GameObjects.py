@@ -1,6 +1,15 @@
-from ObjectManager import Object
+
 from dataclasses import dataclass
 import time
+
+
+@dataclass
+class Object:
+    x: int
+    y: int
+    id: int
+    shape = None
+
 
 @dataclass
 class Player(Object):

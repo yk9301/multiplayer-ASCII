@@ -8,7 +8,7 @@ from publisher import *
 import paho.mqtt.client as mqtt
 from ANSIEscapeSequences import ESC
 
-DEBUG = False
+DEBUG = True
 PLAYER = 1
 
 def game_loop():
@@ -41,7 +41,7 @@ def on_press(key):
 
 
 def on_release(key):
-    # print('{0} released'.format(key))
+    # print('{0} released'.format(key)) 
     if key == keyboard.Key.esc:
         # Stop listener
         return False
@@ -55,7 +55,7 @@ def keyboard_loop():
 
 def subscriber():
     # Logging aktivieren für detaillierte Debug-Informationen
-    logging.basicConfig(level=logging.DEBUG)
+    #logging.basicConfig(level=logging.DEBUG)
 
     # Client initialisieren
     subscriber = "subscriber" + str(PLAYER)
@@ -74,8 +74,8 @@ def subscriber():
     try:
         client.connect(broker_address, port=port, keepalive=60)
     except Exception as e:
-        print(f"Verbindungsfehler: {e}")
-        exit(1)
+        print(f"failed connection attemp: {e}, Debug Mode activ")
+        
 
     # loop
     client.loop_forever()
@@ -103,11 +103,16 @@ def on_message(client, userdata, msg):
         
 
 if __name__ == "__main__":
-    mObjectManager = ObjectManager() 
-    mObjectManager.create_object(0, 9, Player)
-    mObjectManager.create_object(0,0, Player)
-    mObjectManager.create_object(9,9, Player)
-    mObjectManager.create_object(5,5, Wall)
+    mObjectManager = ObjectManager()
+    
+    # map is loaded by parser
+    mObjectManager.world.coord = map_parser("map.txt")
+    mObjectManager.look_for_objects() # adds objects to dict
+
+    # player init
+    mObjectManager.create_object(0, 9, Player, 0)
+    mObjectManager.create_object(0,0, Player, 1)
+    mObjectManager.create_object(9,9, Player, 2)
 
     # multithreading start
     t1 = threading.Thread(target=game_loop)

@@ -1,22 +1,15 @@
 from dataclasses import dataclass
 from queue import SimpleQueue
 from Coord import *
+from GameObjects import *
 
 WORLD_SIZE = 10
 
 
 @dataclass
-class Object:
-    x: int
-    y: int
-    id: int
-    shape = None
-
-
-@dataclass
 class ObjectManager:
     objectsDict = dict()
-    total_objects = 0  # is used for the id, ids are always unique and never re-used.
+    total_objects = 3  # is used for the id, ids are always unique and never re-used.
     world_size = WORLD_SIZE
     world = Grid(WORLD_SIZE, WORLD_SIZE)
     queue = SimpleQueue()
@@ -24,11 +17,15 @@ class ObjectManager:
     def __init__(self):
         world = Grid(self.world_size, self.world_size)
 
-    def create_object(self, x, y, datatype):
-        obj = datatype(x, y, self.total_objects)
-        self.total_objects += 1
+    def create_object(self, x, y, datatype, id=None):
+        """ id is used for manual id control used for player init"""
+        if id != None:
+            obj = datatype(x, y, id)
+        else:
+            obj = datatype(x, y, self.total_objects)
+            self.total_objects += 1
         self.objectsDict[obj.id] = obj
-        self.world[(x, y)] = obj.shape
+        self.world.coord[x][y] = obj.shape
         self.queue.put((x, y))
 
     def delete_object(self, object_or_id):
@@ -38,6 +35,15 @@ class ObjectManager:
             is_deleted = self.objectsDict.pop(object_or_id)
         if not is_deleted:
             assert False, "ERROR: Attempt to delete an object that is not in objectsDict."
+
+    def look_for_objects(self):
+        """updates world and objectdict with created map by parser"""
+        for y in range(WORLD_SIZE):
+            for x in range(WORLD_SIZE):
+                match self.world.coord[x][y]:
+                    case "w":
+                        self.create_object(x,y, Wall)
+    
 
     def move_object(self, object_or_id: Object | int, right, down, relative=True):
         """down and right are relative coordinates. right = 2 means obj.x += 2"""

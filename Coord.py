@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+
 DEFAULT_CHAR = "▢"
 
 
@@ -22,6 +23,7 @@ class Grid:
         x, y = key
         self.coord[x][y] = s
     
+
 # creates default map in file
 def create_map(filename, length, height, default_char=DEFAULT_CHAR):
     fp = open(filename, "w")
@@ -30,19 +32,40 @@ def create_map(filename, length, height, default_char=DEFAULT_CHAR):
             fp.write(default_char + " ")
         fp.write("\n")
 
+
 def map_parser(filename: str):
+    """returns coord dictionary of a created map in .txt file
+        ! an string like x (object) is not in objectDict !"""
+
     fp = open(filename, "r")
     coord = dict()
 
-    x = 0
-    y = 0
     world = ""
+    length = 0
+
     for string in fp.readlines():
         world += string
-    
-    #for string in world:
+
+        if length == 0:
+            length = (len(string) - 1) // 2
+
+    for i in range(length):
+        coord[i] = dict()
+
+    x = 0
+    y = 0
+    for string in world:
+        if string == " ":
+            continue
+        if string == "\n":
+            x = 0
+            y += 1
+            continue
+        coord[x][y] = string
+        x += 1
+    return coord
 
 
 if __name__ == "__main__":
-    #create_map("map.txt", 3,3)
-    map_parser("map.txt")
+    create_map("map.txt", 10,10)
+    print(map_parser("map.txt"))

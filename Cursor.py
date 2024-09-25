@@ -56,7 +56,10 @@ class Cursor:
 
         for y in range(object_manager.world_size):
             for x in range(object_manager.world_size):
-                res += object_manager.world.coord[x][y] + " "
+                try:
+                    res += str(object_manager.world.coord[x][y]) + " "
+                except Exception:
+                    print(x, y)
             res += "\n"
 
         res += ESC.save_pos()
