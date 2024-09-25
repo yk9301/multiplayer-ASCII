@@ -42,7 +42,10 @@ class ObjectManager:
             for x in range(WORLD_SIZE):
                 match self.world.coord[x][y]:
                     case "w":
-                        self.create_object(x,y, Wall)
+                        self.create_object(x, y, Wall)
+                    case "b":
+                        pass
+                        # self.create_object(x, y, Bomb) # uncommend when bomb can be created
     
 
     def move_object(self, object_or_id: Object | int, right, down, relative=True):

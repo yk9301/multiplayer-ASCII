@@ -107,7 +107,7 @@ if __name__ == "__main__":
     mObjectManager = ObjectManager()
     mObjectManager.world.coord = map_parser("map.txt")
     mObjectManager.look_for_objects()
-     
+
     mObjectManager.create_object(0, 9, Player,0)
     mObjectManager.create_object(0,0, Player,1)
     mObjectManager.create_object(9,9, Player,2)

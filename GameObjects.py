@@ -1,4 +1,4 @@
-
+from ANSIEscapeSequences import *
 from dataclasses import dataclass
 import time
 
@@ -37,6 +37,7 @@ class Bomb(Object):
         self.time_since_spawn = 0
         self.time_at_spawn = time.time_ns()
         self.state = 0
+        self.shape = ESC.red("B")
 
     def update(self):
         self.time_since_spawn = time.time_ns() - self.time_at_spawn
