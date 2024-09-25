@@ -103,16 +103,12 @@ def on_message(client, userdata, msg):
         
 
 if __name__ == "__main__":
-    mObjectManager = ObjectManager()
-    
-    # map is loaded by parser
-    mObjectManager.world.coord = map_parser("map.txt")
-    mObjectManager.look_for_objects() # adds objects to dict
-
-    # player init
-    mObjectManager.create_object(0, 9, Player, 0)
-    mObjectManager.create_object(0,0, Player, 1)
-    mObjectManager.create_object(9,9, Player, 2)
+    print(ESC.invisible_cursor(), end="\r")
+    mObjectManager = ObjectManager() 
+    mObjectManager.create_object(0, 9, Player)
+    mObjectManager.create_object(0,0, Player)
+    mObjectManager.create_object(9,9, Player)
+    mObjectManager.create_object(5,5, Wall)
 
     # multithreading start
     t1 = threading.Thread(target=game_loop)
