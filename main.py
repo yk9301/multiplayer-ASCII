@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-import os, time, threading, logging
+import os, time, threading
 from pynput import keyboard
 from ObjectManager import *
 from Cursor import Cursor
@@ -7,7 +7,8 @@ from GameObjects import *
 from publisher import *
 import paho.mqtt.client as mqtt
 
-DEBUG = True
+DEBUG = False
+PLAYER = 1
 
 def game_loop():
     cursor = Cursor(mObjectManager)
@@ -20,13 +21,13 @@ def on_press(key):
     try:
         match key.char:
             case "w":
-                mObjectManager.move_object(player, 0, -1)
+                mObjectManager.move_object(PLAYER, 0, -1)
             case "s":
-                mObjectManager.move_object(player, 0, 1)
+                mObjectManager.move_object(PLAYER, 0, 1)
             case "a":
-                mObjectManager.move_object(player, -1, 0)
+                mObjectManager.move_object(PLAYER, -1, 0)
             case "d":
-                mObjectManager.move_object(player, 1, 0)
+                mObjectManager.move_object(PLAYER, 1, 0)
     except AttributeError:
         print('special key {0} pressed'.format(key))
         if '{0}'.format(key) == 'Key.enter':
@@ -34,7 +35,7 @@ def on_press(key):
 
     if not DEBUG:
             # place for publisher function call
-            publisher(str(mObjectManager.objectsDict[player].x)+ ',' +str(mObjectManager.objectsDict[player].y) + ',' + str(mObjectManager.objectsDict[player].id) + ';')
+            publisher(str(mObjectManager.objectsDict[PLAYER].x)+ ',' +str(mObjectManager.objectsDict[PLAYER].y) + ',' + str(mObjectManager.objectsDict[PLAYER].id) + ';', PLAYER)
 
 
 def on_release(key):
@@ -55,7 +56,8 @@ def subscriber():
     logging.basicConfig(level=logging.DEBUG)
 
     # Client initialisieren
-    client = mqtt.Client(client_id="subscriber1", protocol=mqtt.MQTTv311)
+    subscriber = "subscriber" + str(PLAYER)
+    client = mqtt.Client(client_id=subscriber, protocol=mqtt.MQTTv311)
     client.enable_logger()
 
     # Broker-Adresse und Port
@@ -104,15 +106,6 @@ if __name__ == "__main__":
     mObjectManager.create_object(0,0, Player)
     mObjectManager.create_object(9,9, Player)
     mObjectManager.create_object(5,5, Wall)
-
-    # object id to play
-    player = 1
-
-    if not DEBUG:
-        # network connection
-        broker_address = "192.168.86.72"  
-        client = mqtt.Client(client_id="Publisher1", protocol=mqtt.MQTTv311)
-        client.connect(broker_address, 1883, 60)
 
     # multithreading start
     t1 = threading.Thread(target=game_loop)

@@ -36,19 +36,13 @@ def map_parser(filename: str):
 
     x = 0
     y = 0
+    world = ""
+    for string in fp.readlines():
+        world += string
+    
+    #for string in world:
 
-    for string in fp.read():
-        if string == " ":
-            continue
-        if string == "\n":
-            x = 0
-            y += 1
-            continue
-        #coord[x][y] = string
-        x += 1
-    print(result)
-    return coord
 
 if __name__ == "__main__":
     #create_map("map.txt", 3,3)
-    print(map_parser("map.txt"))
+    map_parser("map.txt")
