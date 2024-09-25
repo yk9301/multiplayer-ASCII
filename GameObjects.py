@@ -4,7 +4,8 @@ import time
 
 @dataclass
 class Player(Object):
-    look_direction: str
+    look_direction: str = 'w'
+
     def __post_init__(self):
         if self.id == 0:
             self.shape = '\033[91mT\033[0m'
@@ -17,10 +18,11 @@ class Player(Object):
 
 @dataclass
 class Bomb(Object):
-    time_since_spawn: int
-    time_at_spawn: int
-    state: int
     player: int
+    look_direction: int
+    time_since_spawn: int = 0
+    time_at_spawn: int = 0
+    state: int = 0
 
     def __init__(self):
         self.time_since_spawn = 0
