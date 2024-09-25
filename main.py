@@ -8,7 +8,7 @@ from publisher import *
 import paho.mqtt.client as mqtt
 from ANSIEscapeSequences import ESC
 
-DEBUG = True
+DEBUG = False
 PLAYER = 1
 
 def game_loop():
@@ -77,9 +77,11 @@ def subscriber():
     except Exception as e:
         print(f"failed connection attemp: {e}, Debug Mode activ")
         
-
     # loop
     client.loop_forever()
+
+
+
 
 
 def on_connect(client, userdata, flags, rc):
@@ -95,35 +97,51 @@ def on_message(client, userdata, msg):
     topic = msg.topic
     
     # Aktion basierend auf der Nachricht ausführen
-    if topic == "update":
-        x = int(message[0])
-        y = int(message[2])
-        id = int(message[4:-1])
-        
-        mObjectManager.move_object(id,x - mObjectManager.objectsDict[id].x, y - mObjectManager.objectsDict[id].y)
-        
+    match topic:
+        case "update":
+            x = int(message[0])
+            y = int(message[2])
+            id = int(message[4:-1])
+        case "map":
+            if message == "0" and PLAYER == 1:
+                publisher(map_as_string("map.txt"), PLAYER, "map")
+            if message != "0" and PLAYER != 1:
+                mObjectManager.world.coord = map_as_coord(message, mObjectManager.world.x)
+    
+    mObjectManager.move_object(id,x - mObjectManager.objectsDict[id].x, y - mObjectManager.objectsDict[id].y)
+
 
 if __name__ == "__main__":
     print(ESC.invisible_cursor(), end="\r")
     mObjectManager = ObjectManager()
-    mObjectManager.world.coord = map_parser("map.txt")
-    mObjectManager.look_for_objects()
+    
+    if DEBUG is False:
+        if PLAYER == 1:
+            mObjectManager.world.coord = map_parser("map.txt")
+            mObjectManager.look_for_objects()
+            t1 = threading.Thread(target=subscriber)
+            t1.start()
+        else:
+            t1 = threading.Thread(target=subscriber)
+            t1.start()
 
+            publisher("0", PLAYER, "map")
+            
+    else:
+        mObjectManager.world.coord = map_parser("map.txt")
+        mObjectManager.look_for_objects()
+    
     mObjectManager.create_object(0, 9, Player,0)
     mObjectManager.create_object(0,0, Player,1)
     mObjectManager.create_object(9,9, Player,2)
     mObjectManager.create_object(5,5, Wall)
 
     # multithreading start
-    t1 = threading.Thread(target=game_loop)
-    t2 = threading.Thread(target=keyboard_loop)
+    t2 = threading.Thread(target=game_loop)
+    t3 = threading.Thread(target=keyboard_loop)
     
-    if not DEBUG:
-        t3 = threading.Thread(target=subscriber)
-        t3.start()
-    
-    t1.start()
     t2.start()
+    t3.start()
 
     
     

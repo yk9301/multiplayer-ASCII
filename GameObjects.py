@@ -70,3 +70,4 @@ class Wall(Object):
     def __post_init__(self):
         self.shape = '\033[90mx\033[0m'
 
+

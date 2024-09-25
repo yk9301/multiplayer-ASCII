@@ -32,6 +32,34 @@ def create_map(filename, length, height, default_char=DEFAULT_CHAR):
             fp.write(default_char + " ")
         fp.write("\n")
 
+def map_as_string(filename):
+    """used for mqtt communication"""
+    fp = open(filename, "r")
+
+    world = ""
+    for string in fp.readlines():
+        world += string
+    
+    return world
+
+def map_as_coord(world, length):
+    coord = dict()
+
+    for i in range(length):
+        coord[i] = dict()
+
+    x = 0
+    y = 0
+    for string in world:
+        if string == " ":
+            continue
+        if string == "\n":
+            x = 0
+            y += 1
+            continue
+        coord[x][y] = string
+        x += 1
+    return coord
 
 def map_parser(filename: str):
     """returns coord dictionary of a created map in .txt file
