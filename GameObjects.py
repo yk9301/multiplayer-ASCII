@@ -69,6 +69,6 @@ class Bomb(Object):
 @dataclass
 class Wall(Object):
     def __post_init__(self):
-        self.shape = ESC.gray(ESC.blinking("x"))
+        self.shape = ESC.gray("▢")
 
 
