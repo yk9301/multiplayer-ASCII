@@ -87,7 +87,8 @@ def subscriber():
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
         print("Subscriber verbunden")
-        client.subscribe("update")  # subscribtion for specific subject
+        client.subscribe("update")  # subscribtion for specific subject#
+        client.subscribe("map")
     else:
         print(f"Subscriber Verbindung fehlgeschlagen mit Code {rc}")
 
@@ -102,13 +103,14 @@ def on_message(client, userdata, msg):
             x = int(message[0])
             y = int(message[2])
             id = int(message[4:-1])
+            mObjectManager.move_object(id,x - mObjectManager.objectsDict[id].x, y - mObjectManager.objectsDict[id].y)
         case "map":
             if message == "0" and PLAYER == 1:
-                publisher(map_as_string("map.txt"), PLAYER, "map")
+                publisher(mObjectManager.world_as_string, PLAYER, "map")
             if message != "0" and PLAYER != 1:
                 mObjectManager.world.coord = map_as_coord(message, mObjectManager.world.x)
-    
-    mObjectManager.move_object(id,x - mObjectManager.objectsDict[id].x, y - mObjectManager.objectsDict[id].y)
+                mObjectManager.look_for_objects()
+                mObjectManager.map_shared = True
 
 
 if __name__ == "__main__":
@@ -118,23 +120,29 @@ if __name__ == "__main__":
     if DEBUG is False:
         if PLAYER == 1:
             mObjectManager.world.coord = map_parser("map.txt")
-            mObjectManager.look_for_objects()
+            mObjectManager.look_for_objects() # loads players if placed on map.txt
+
+            # saves map as string to share it to player
+            mObjectManager.world_as_string = map_as_string("map.txt")
+
             t1 = threading.Thread(target=subscriber)
             t1.start()
         else:
+            # other players waiting in loop until they recieve the map
             t1 = threading.Thread(target=subscriber)
             t1.start()
-
-            publisher("0", PLAYER, "map")
+            counter = 0
+            while(mObjectManager.map_shared == False):
+                publisher("0", PLAYER, "map")
+                time.sleep(0.1)
+                print(f"\r waiting for map {bin(counter)}", end="\r")
+                counter += 1
+                
             
     else:
         mObjectManager.world.coord = map_parser("map.txt")
-        mObjectManager.look_for_objects()
-    
-    mObjectManager.create_object(0, 9, Player,0)
-    mObjectManager.create_object(0,0, Player,1)
-    mObjectManager.create_object(9,9, Player,2)
-    mObjectManager.create_object(5,5, Wall)
+        mObjectManager.look_for_objects() # loads players if placed on map.txt
+
 
     # multithreading start
     t2 = threading.Thread(target=game_loop)

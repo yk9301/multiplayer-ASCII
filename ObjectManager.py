@@ -13,6 +13,8 @@ class ObjectManager:
     world_size = WORLD_SIZE
     world = Grid(WORLD_SIZE, WORLD_SIZE)
     queue = SimpleQueue()
+    map_shared = False
+    world_as_string = ""
 
     def __init__(self):
         world = Grid(self.world_size, self.world_size)
@@ -46,6 +48,12 @@ class ObjectManager:
                     case "b":
                         pass
                         # self.create_object(x, y, Bomb) # uncommend when bomb can be created
+                    case "T":
+                        self.create_object(x, y, Player, 0)
+                    case "Y":
+                        self.create_object(x, y, Player, 1)
+                    case "K":
+                        self.create_object(x, y,Player, 2)
     
 
     def move_object(self, object_or_id: Object | int, right, down, relative=True):
