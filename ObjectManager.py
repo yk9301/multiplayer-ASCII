@@ -1,10 +1,16 @@
 from dataclasses import dataclass
 from queue import SimpleQueue
 from Coord import *
-from GameObjects import *
+
 
 WORLD_SIZE = 10
 
+@dataclass
+class Object:
+    x: int
+    y: int
+    id: int
+    shape = None
 
 @dataclass
 class ObjectManager:
@@ -38,13 +44,8 @@ class ObjectManager:
             self.world.coord[obj.x][obj.y] = self.world.default_char
             self.update_queue.put((obj.x, obj.y))
 
-    """def create_object(self, x, y, datatype, **super_vars):
-        obj = datatype(x, y, self.total_objects, **super_vars)
-        self.total_objects += 1
-        self.create_queue.put(obj)
-        return obj.id"""
     
-    def create_object(self, x, y, datatype, id=None):
+    def create_object(self, x, y, datatype, id=None, **super_vars):
         """ id is used for manual id control used for player init"""
         if id != None:
             obj = datatype(x, y, id)
@@ -54,6 +55,10 @@ class ObjectManager:
         self.objectsDict[obj.id] = obj
         self.world.coord[x][y] = obj.shape
         self.queue.put((x, y))
+        obj = datatype(x, y, self.total_objects if id==None else id, **super_vars)
+        self.total_objects += 1
+        self.create_queue.put(obj)
+        return obj.id
 
     def delete_object(self, obj_id, throw_error=True):
         if obj_id in self.objectsDict or not throw_error:
@@ -61,22 +66,6 @@ class ObjectManager:
         elif throw_error:
             assert False, "ERROR: Attempt to delete an object that is not in objectsDict."
 
-    def look_for_objects(self):
-        """updates world and objectdict with created map by parser"""
-        for y in range(WORLD_SIZE):
-            for x in range(WORLD_SIZE):
-                match self.world.coord[x][y]:
-                    case "w":
-                        self.create_object(x, y, Wall)
-                    case "b":
-                        pass
-                        # self.create_object(x, y, Bomb) # uncommend when bomb can be created
-                    case "T":
-                        self.create_object(x, y, Player, 0)
-                    case "Y":
-                        self.create_object(x, y, Player, 1)
-                    case "K":
-                        self.create_object(x, y,Player, 2)
     
 
     def move_object(self, object_or_id: Object | int, right, down, relative=True):

@@ -3,12 +3,13 @@ import os, time, threading
 from pynput import keyboard
 from ObjectManager import *
 from Cursor import Cursor
+from parser import *
 #from GameObjects import *
 from publisher import *
 import paho.mqtt.client as mqtt
 from ANSIEscapeSequences import ESC
 
-DEBUG = False
+DEBUG = True
 PLAYER = 1
 
 
@@ -35,8 +36,7 @@ def on_press(key):
             case "d":
                 mObjectManager.move_object(PLAYER, 1, 0)
             case "f":
-                pass
-                #throw_bomb(PLAYER)
+                throw_bomb(PLAYER)
     except AttributeError:
         print('special key {0} pressed'.format(key))
         if '{0}'.format(key) == 'Key.enter':
@@ -120,7 +120,8 @@ def on_message(client, userdata, msg):
             array = message_parser(message)
             x, y, id = array[0], array[1], array[2]
             if array[2] > 2:
-                mObjectManager.create_object(x, y, Bomb, id)
+                pass
+                #mObjectManager.create_object(x, y, Bomb, id)
             else:
                 mObjectManager.move_object(id,x - mObjectManager.objectsDict[id].x, y - mObjectManager.objectsDict[id].y)
         case "map":
@@ -129,7 +130,7 @@ def on_message(client, userdata, msg):
             if message != "0" and PLAYER != 1:
                 i = int(message[0]) # first string is len
                 mObjectManager.world.coord = map_as_coord(message[(i + 1):], mObjectManager.world.x)
-                mObjectManager.look_for_objects()
+                look_for_objects(mObjectManager)
                 mObjectManager.map_shared = True
 
 
@@ -140,7 +141,7 @@ if __name__ == "__main__":
     if DEBUG is False:
         if PLAYER == 1:
             mObjectManager.world.coord = map_parser("map.txt")
-            mObjectManager.look_for_objects() # loads players if placed on map.txt
+            look_for_objects(mObjectManager) # loads players if placed on map.txt
 
             # saves map as string to share it to player
             mObjectManager.world_as_string = map_as_string("map.txt")
@@ -161,7 +162,7 @@ if __name__ == "__main__":
             
     else:
         mObjectManager.world.coord = map_parser("map.txt")
-        mObjectManager.look_for_objects() # loads players if placed on map.txt
+        look_for_objects(mObjectManager) # loads players if placed on map.txt
 
 
     # multithreading start

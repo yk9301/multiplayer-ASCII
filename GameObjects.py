@@ -1,10 +1,11 @@
 from ANSIEscapeSequences import *
 from dataclasses import dataclass
+from ObjectManager import *
 import time
 
 BOMB_COOLDOWN = 4
 
-"""
+
 def throw_bomb(thrower_id):
     obj = ObjectManager.objectsDict[thrower_id]
     if obj.bomb_cooldown < BOMB_COOLDOWN * 400000000:
@@ -24,15 +25,7 @@ def explode(obj_id: int, size):
         for x in [(0, -2), (0, -1), (0, 1), (0, 2), (1, -1), (1, 0), (0, 0),
                   (1, 1), (2, 0), (-1, -1), (-1, 0), (-1, 1), (-2, 0)]:
             exp = om.create_object(min(max(x[0] + obj.x, 0), om.world_size-1), min(max(0, x[1] + obj.y), om.world_size-1),
-                                   Explosion)"""
-
-
-@dataclass
-class Object:
-    x: int
-    y: int
-    id: int
-    shape = None
+                                   Explosion)
 
 
 @dataclass
@@ -72,24 +65,24 @@ class Bomb(Object):
         if self.state == 0:
             if self.time_since_spawn > 1 * t:
                 self.state = 1
-                #self.roll()
+                self.roll()
         elif self.state == 1:
             if self.time_since_spawn > 2 * t:
                 self.state = 2
-                #self.roll()
+                self.roll()
         elif self.state == 2:
             if self.time_since_spawn > 3 * t:
                 self.state = 3
-                #self.roll()
+                self.roll()
         elif self.state == 3:
             if self.time_since_spawn > 4 * t:
                 pass
-                #explode(self.id, 3)
+                explode(self.id, 3)
 
-"""
+
     def roll(self):
         ObjectManager().move_object(self.id, self.look_direction[0], self.look_direction[1])
-"""
+
 
 @dataclass
 class Wall(Object):
@@ -100,7 +93,7 @@ class Wall(Object):
     def update(self):
         pass
 
-"""
+
 @dataclass
 class Explosion(Object):
     time_since_spawn: int = 0
@@ -123,5 +116,4 @@ class Explosion(Object):
             self.om.world.coord[self.x][self.y] = self.shape
             self.om.update_queue.put((self.x, self.y))
         if self.time_since_spawn > t * 3:
-           # ObjectManager().delete_object(self.id, False)
-"""
+           ObjectManager().delete_object(self.id, False)
