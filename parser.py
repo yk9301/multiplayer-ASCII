@@ -1,12 +1,14 @@
 from GameObjects import *
 
 # creates default map in file
+
 def create_map(filename, length, height, default_char=DEFAULT_CHAR):
     fp = open(filename, "w")
     for y in range(height):
         for x in range(length):
             fp.write(default_char + " ")
         fp.write("\n")
+
 
 def map_as_string(filename):
     """used for mqtt communication"""
@@ -17,6 +19,7 @@ def map_as_string(filename):
         world += string
     
     return world
+
 
 def map_as_coord(world, length):
     coord = dict()

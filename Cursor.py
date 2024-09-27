@@ -22,10 +22,8 @@ class Cursor:
         self.x, self.y = 0, 0
 
     def print_changes(self, object_manager: ObjectManager):
-        if object_manager.update_queue.empty():
-            pass
         """update the symbols for every position in the ObjectManagers queue"""
-        if object_manager.queue.empty():
+        if object_manager.update_queue.empty():
             return
         # reset cursor to the top of the debug stack and clear everything other things may have printed
         res = ESC.load_pos() + ESC.clear_until_end_of_screen()

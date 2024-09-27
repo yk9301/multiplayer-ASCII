@@ -2,8 +2,8 @@ from dataclasses import dataclass
 from queue import SimpleQueue
 from Coord import *
 
-
 WORLD_SIZE = 10
+
 
 @dataclass
 class Object:
@@ -12,19 +12,17 @@ class Object:
     id: int
     shape = None
 
+
 @dataclass
 class ObjectManager:
     instance = None
     objectsDict = dict()
-    total_objects = 3  # is used for the id, ids are always unique and never re-used.
+    total_objects = 0  # is used for the id, ids are always unique and never re-used.
     world_size = WORLD_SIZE
     world = Grid(WORLD_SIZE, WORLD_SIZE)
     update_queue = SimpleQueue()
     delete_queue = SimpleQueue()
     create_queue = SimpleQueue()
-    queue = SimpleQueue()
-    map_shared = False
-    world_as_string = ""
 
     def __new__(cls):
         if not cls.instance:
@@ -44,18 +42,8 @@ class ObjectManager:
             self.world.coord[obj.x][obj.y] = self.world.default_char
             self.update_queue.put((obj.x, obj.y))
 
-    
     def create_object(self, x, y, datatype, id=None, **super_vars):
-        """ id is used for manual id control used for player init"""
-        if id != None:
-            obj = datatype(x, y, id)
-        else:
-            obj = datatype(x, y, self.total_objects)
-            self.total_objects += 1
-        self.objectsDict[obj.id] = obj
-        self.world.coord[x][y] = obj.shape
-        self.queue.put((x, y))
-        obj = datatype(x, y, self.total_objects if id==None else id, **super_vars)
+        obj = datatype(x, y, self.total_objects if id is None else id, **super_vars)
         self.total_objects += 1
         self.create_queue.put(obj)
         return obj.id
@@ -65,8 +53,6 @@ class ObjectManager:
             self.delete_queue.put(obj_id)
         elif throw_error:
             assert False, "ERROR: Attempt to delete an object that is not in objectsDict."
-
-    
 
     def move_object(self, object_or_id: Object | int, right, down, relative=True):
         """down and right are relative coordinates. right = 2 means obj.x += 2"""

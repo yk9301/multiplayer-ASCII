@@ -79,7 +79,6 @@ class Bomb(Object):
                 pass
                 explode(self.id, 3)
 
-
     def roll(self):
         ObjectManager().move_object(self.id, self.look_direction[0], self.look_direction[1])
 
@@ -88,7 +87,6 @@ class Bomb(Object):
 class Wall(Object):
     def __post_init__(self):
         self.shape = ESC.gray("▢")
-
 
     def update(self):
         pass
@@ -116,4 +114,4 @@ class Explosion(Object):
             self.om.world.coord[self.x][self.y] = self.shape
             self.om.update_queue.put((self.x, self.y))
         if self.time_since_spawn > t * 3:
-           ObjectManager().delete_object(self.id, False)
+            ObjectManager().delete_object(self.id, False)
