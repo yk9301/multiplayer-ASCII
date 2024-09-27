@@ -92,23 +92,36 @@ def on_connect(client, userdata, flags, rc):
     else:
         print(f"Subscriber Verbindung fehlgeschlagen mit Code {rc}")
 
+def message_parser(message):
+    """enables bigger maps due to parsing coords > 10"""
+    result = []
+    acc = ""
+    for string in message:
+        if string != "," and string != ";":
+            acc += string
+        if string == "," or string == ";":
+            result.append(int(acc))
+            acc = ""
+    return result
 
 def on_message(client, userdata, msg):
     message = msg.payload.decode()
     topic = msg.topic
     
-    # Aktion basierend auf der Nachricht ausführen
     match topic:
         case "update":
-            x = int(message[0])
-            y = int(message[2])
-            id = int(message[4:-1])
-            mObjectManager.move_object(id,x - mObjectManager.objectsDict[id].x, y - mObjectManager.objectsDict[id].y)
+            array = message_parser(message)
+            x, y, id = array[0], array[1], array[2]
+            if array[2] > 2:
+                mObjectManager.create_object(x, y, Bomb, id)
+            else:
+                mObjectManager.move_object(id,x - mObjectManager.objectsDict[id].x, y - mObjectManager.objectsDict[id].y)
         case "map":
             if message == "0" and PLAYER == 1:
-                publisher(mObjectManager.world_as_string, PLAYER, "map")
+                publisher(str(len(str(mObjectManager.world_size))) + str(mObjectManager.world_size) + mObjectManager.world_as_string, PLAYER, "map")
             if message != "0" and PLAYER != 1:
-                mObjectManager.world.coord = map_as_coord(message, mObjectManager.world.x)
+                i = int(message[0]) # first string is len
+                mObjectManager.world.coord = map_as_coord(message[(i + 1):], mObjectManager.world.x)
                 mObjectManager.look_for_objects()
                 mObjectManager.map_shared = True
 

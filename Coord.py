@@ -94,7 +94,7 @@ def map_parser(filename: str):
 
 
 if __name__ == "__main__":
-    create_map("map.txt", 10,10)
+    create_map("map.txt", 20,20)
     a = map_as_string("map.txt")
     print(a)
-    print(map_as_coord(a, 10))
+    print(map_as_coord(a, 20))
