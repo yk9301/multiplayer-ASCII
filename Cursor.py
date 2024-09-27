@@ -23,6 +23,7 @@ class Cursor:
 
     def print_changes(self, object_manager: ObjectManager):
         if object_manager.update_queue.empty():
+            pass
         """update the symbols for every position in the ObjectManagers queue"""
         if object_manager.queue.empty():
             return

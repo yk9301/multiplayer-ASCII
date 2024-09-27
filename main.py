@@ -3,13 +3,13 @@ import os, time, threading
 from pynput import keyboard
 from ObjectManager import *
 from Cursor import Cursor
-from GameObjects import *
+#from GameObjects import *
 from publisher import *
 import paho.mqtt.client as mqtt
 from ANSIEscapeSequences import ESC
 
-DEBUG = True
-PLAYER = 0
+DEBUG = False
+PLAYER = 1
 
 
 def game_loop():
@@ -35,7 +35,8 @@ def on_press(key):
             case "d":
                 mObjectManager.move_object(PLAYER, 1, 0)
             case "f":
-                throw_bomb(PLAYER)
+                pass
+                #throw_bomb(PLAYER)
     except AttributeError:
         print('special key {0} pressed'.format(key))
         if '{0}'.format(key) == 'Key.enter':
