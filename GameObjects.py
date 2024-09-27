@@ -1,6 +1,27 @@
-from ObjectManager import Object
+from ObjectManager import *
 from dataclasses import dataclass
+from ANSIEscapeSequences import ESC
 import time
+
+
+def throw_bomb(thrower_id):
+    obj = ObjectManager.objectsDict[thrower_id]
+    direction = obj.look_direction
+    if not 0 <= obj.x + direction[0] < WORLD_SIZE or not 0 <= obj.y + direction[1] < WORLD_SIZE:
+        return
+    ObjectManager().create_object(obj.x + direction[0], obj.y + direction[1], Bomb, player=thrower_id, look_direction=direction)
+
+
+def explode(obj_id: int, size):
+    om = ObjectManager()
+    obj = om.objectsDict[obj_id]
+    om.delete_object(obj.id)
+    if size == 3:
+        for x in [(0, -2), (0, -1), (0, 1), (0, 2), (1, -1), (1, 0), (0, 0),
+                  (1, 1), (2, 0), (-1, -1), (-1, 0), (-1, 1), (-2, 0)]:
+            exp = om.create_object(min(max(x[0] + obj.x, 0), om.world_size-1), min(max(0, x[1] + obj.y), om.world_size-1),
+                                   Explosion)
+
 
 @dataclass
 class Player(Object):
@@ -14,8 +35,7 @@ class Player(Object):
         if self.id == 2:
             self.shape = '\033[93mK\033[0m'
 
-
-    def throw_bomb(self):
+    def update(self):
         pass
 
 
@@ -29,31 +49,29 @@ class Bomb(Object):
 
     def __post_init__(self):
         self.time_at_spawn = time.time_ns()
+        self.shape = ESC.blinking(ESC.red("O"))
 
     def update(self):
         self.time_since_spawn = time.time_ns() - self.time_at_spawn
-
+        t = 600000000
         if self.state == 0:
-            if self.time_since_spawn > 300000:
+            if self.time_since_spawn > 1 * t:
                 self.state = 1
                 self.roll()
         elif self.state == 1:
-            if self.time_at_spawn > 600000:
+            if self.time_since_spawn > 2 * t:
                 self.state = 2
                 self.roll()
         elif self.state == 2:
-            if self.time_at_spawn > 900000:
+            if self.time_since_spawn > 3 * t:
                 self.state = 3
                 self.roll()
         elif self.state == 3:
-            if self.time_at_spawn > 1200000:
-                self.explode()
+            if self.time_since_spawn > 4 * t:
+                explode(self.id, 3)
 
     def roll(self):
-        pass
-
-    def explode(self):
-        pass
+        ObjectManager().move_object(self.id, self.look_direction[0], self.look_direction[1])
 
 
 @dataclass
@@ -61,3 +79,30 @@ class Wall(Object):
     def __post_init__(self):
         self.shape = '\033[90mx\033[0m'
 
+    def update(self):
+        pass
+
+
+@dataclass
+class Explosion(Object):
+    time_since_spawn: int = 0
+    time_at_spawn: int = 0
+    om = ObjectManager()
+
+    def __post_init__(self):
+        self.time_at_spawn = time.time_ns()
+        self.shape = ESC.red("X")
+
+    def update(self):
+        self.time_since_spawn = time.time_ns() - self.time_at_spawn
+        t = 100000000
+        if self.time_since_spawn > t * 1:
+            self.shape = ESC.orange("X")
+            self.om.world.coord[self.x][self.y] = self.shape
+            self.om.update_queue.put((self.x, self.y))
+        if self.time_since_spawn > t * 2:
+            self.shape = ESC.yellow("X")
+            self.om.world.coord[self.x][self.y] = self.shape
+            self.om.update_queue.put((self.x, self.y))
+        if self.time_since_spawn > t * 3:
+            ObjectManager().delete_object(self.id, False)

@@ -34,13 +34,16 @@ class Cursor:
         self.x, self.y = x + 1, y
 
     def print_changes(self, object_manager: ObjectManager):
-        if object_manager.queue.empty():
+        if object_manager.update_queue.empty():
             return
 
         res = ESC.load_pos() + ESC.clear_until_end_of_screen()
-        while not object_manager.queue.empty():
-            x, y = object_manager.queue.get()
-            res += ESC.goto_pos(self.x, self.y, x * 2 , y) + object_manager.world.coord[x][y]
+        while not object_manager.update_queue.empty():
+            x, y = object_manager.update_queue.get()
+            try:  # This try-catch is because for some reason it doesn't work without.
+                res += ESC.goto_pos(self.x, self.y, x * 2, y) + object_manager.world.coord[x][y]
+            except TypeError:
+                pass
             self.x = x * 2 + 1
             self.y = y
 

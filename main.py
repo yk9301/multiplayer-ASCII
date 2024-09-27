@@ -8,14 +8,18 @@ from publisher import *
 import paho.mqtt.client as mqtt
 from ANSIEscapeSequences import ESC
 
-DEBUG = False
-PLAYER = 1
+DEBUG = True
+PLAYER = 0
+
 
 def game_loop():
     cursor = Cursor()
     cursor.reprint_whole_map(mObjectManager, same_position=False)
     while True:
         cursor.print_changes(mObjectManager)
+        for obj in mObjectManager.objectsDict:
+            mObjectManager.objectsDict[obj].update()
+        mObjectManager.update()
         time.sleep(0.01)
 
 
@@ -30,6 +34,8 @@ def on_press(key):
                 mObjectManager.move_object(PLAYER, -1, 0)
             case "d":
                 mObjectManager.move_object(PLAYER, 1, 0)
+            case "f":
+                throw_bomb(PLAYER)
     except AttributeError:
         print('special key {0} pressed'.format(key))
         if '{0}'.format(key) == 'Key.enter':
@@ -55,7 +61,7 @@ def keyboard_loop():
 
 def subscriber():
     # Logging aktivieren für detaillierte Debug-Informationen
-    logging.basicConfig(level=logging.DEBUG)
+    #logging.basicConfig(level=logging.DEBUG)
 
     # Client initialisieren
     subscriber = "subscriber" + str(PLAYER)
