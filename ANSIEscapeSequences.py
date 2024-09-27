@@ -20,6 +20,15 @@ from dataclasses import dataclass
 # \033[8m 	\033[28m 	set hidden/invisible mode
 # \033[9m 	\033[29m 	set strikethrough mode.
 
+# \033[1m 	\033[21m 	set bold mode.
+# \033[2m 	\033[22m 	set dim/faint mode.
+# \033[3m 	\033[23m 	set italic mode.
+# \033[4m 	\033[24m 	set underline mode.
+# \033[5m 	\033[25m 	set blinking mode
+# \033[7m 	\033[27m 	set inverse/reverse mode
+# \033[8m 	\033[28m 	set hidden/invisible mode
+# \033[9m 	\033[29m 	set strikethrough mode.
+
 Color = {
     "GRAY": "\033[90m",
     "RED": "\033[91m",
@@ -30,9 +39,11 @@ Color = {
     "CYAN": "\033[96m",
     "WHITE": "\033[97m",
     "BLACK": "\033[30m",
+    "ORANGE": "\033[38;5;214m",
 }
 
 DEFAULT_COLOR = "WHITE"
+
 
 
 @dataclass
@@ -76,6 +87,11 @@ class ESC:
 
     @staticmethod
     def red(string: str):
+        return Color["RED"] + string + Color[DEFAULT_COLOR]
+
+    @staticmethod
+    def orange(string: str):
+        return Color["ORANGE"] + string + Color[DEFAULT_COLOR]
         return Color["RED"] + string + Color[DEFAULT_COLOR]
 
     @staticmethod

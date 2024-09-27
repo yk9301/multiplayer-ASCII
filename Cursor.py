@@ -22,17 +22,18 @@ class Cursor:
         self.x, self.y = 0, 0
 
     def print_changes(self, object_manager: ObjectManager):
+        if object_manager.update_queue.empty():
         """update the symbols for every position in the ObjectManagers queue"""
         if object_manager.queue.empty():
             return
         # reset cursor to the top of the debug stack and clear everything other things may have printed
         res = ESC.load_pos() + ESC.clear_until_end_of_screen()
-        while not object_manager.queue.empty():
-            x, y = object_manager.queue.get()
-            # move to the position that has to get updated and add the new char
-            # x * 2, because there are spaces inbetween every grid point
-            res += ESC.goto_pos(self.x, self.y, x * 2, y) + object_manager.world.coord[x][y]
-            # update cursor position, +1, because one char was added
+        while not object_manager.update_queue.empty():
+            x, y = object_manager.update_queue.get()
+            try:  # This try-catch is because for some reason it doesn't work without.
+                res += ESC.goto_pos(self.x, self.y, x * 2, y) + object_manager.world.coord[x][y]
+            except TypeError:
+                pass
             self.x = x * 2 + 1
             self.y = y
         # go to the end of the debug stack and save the position
