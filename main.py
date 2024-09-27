@@ -9,8 +9,8 @@ from publisher import *
 import paho.mqtt.client as mqtt
 from ANSIEscapeSequences import ESC
 
-DEBUG = True
-PLAYER = 1
+DEBUG = False
+PLAYER = 0
 
 
 def game_loop():
