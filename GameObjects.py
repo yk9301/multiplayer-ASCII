@@ -3,13 +3,18 @@ from dataclasses import dataclass
 from ANSIEscapeSequences import ESC
 import time
 
+BOMB_COOLDOWN = 4
+
 
 def throw_bomb(thrower_id):
     obj = ObjectManager.objectsDict[thrower_id]
+    if obj.bomb_cooldown < BOMB_COOLDOWN * 400000000:
+        return
     direction = obj.look_direction
     if not 0 <= obj.x + direction[0] < WORLD_SIZE or not 0 <= obj.y + direction[1] < WORLD_SIZE:
         return
     ObjectManager().create_object(obj.x + direction[0], obj.y + direction[1], Bomb, player=thrower_id, look_direction=direction)
+    obj.time_at_bomb = time.time_ns()
 
 
 def explode(obj_id: int, size):
@@ -26,6 +31,8 @@ def explode(obj_id: int, size):
 @dataclass
 class Player(Object):
     look_direction: tuple[int, int] = (0, 1)
+    bomb_cooldown: int = 0
+    time_at_bomb: int = time.time_ns()
 
     def __post_init__(self):
         if self.id == 0:
@@ -36,7 +43,7 @@ class Player(Object):
             self.shape = '\033[93mK\033[0m'
 
     def update(self):
-        pass
+        self.bomb_cooldown = time.time_ns() - self.time_at_bomb
 
 
 @dataclass
