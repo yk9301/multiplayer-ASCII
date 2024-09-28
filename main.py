@@ -13,6 +13,7 @@ DEBUG = True
 PLAYER = 1
 
 
+
 def game_loop():
     cursor = Cursor()
     cursor.reprint_whole_map(mObjectManager, same_position=False)
@@ -37,9 +38,11 @@ def on_press(key):
             case "d":
                 mObjectManager.move_object(PLAYER, 1, 0)
             case "f":
-                throw_bomb(PLAYER)
+                place_or_throw_object(PLAYER, RollingBomb)
                 if DEBUG == False:
-                    publisher(f"{PLAYER}", PLAYER, "bomb")
+                    publisher(f"{PLAYER}", PLAYER, "throw")
+            case "r":
+                place_or_throw_object(PLAYER, Mine)
                     
     except AttributeError:
         print('special key {0} pressed'.format(key))

@@ -3,17 +3,22 @@ from dataclasses import dataclass
 from ObjectManager import *
 import time
 
-BOMB_COOLDOWN = 4
+ROLLING_BOMB_COOLDOWN = 4
+MINE_COOLDOWN = 4
 
 
-def throw_bomb(thrower_id):
+def place_or_throw_object(thrower_id, data_type):
     obj = ObjectManager.objectsDict[thrower_id]
-    if obj.bomb_cooldown < BOMB_COOLDOWN * 400000000:
-        return
+    if data_type == RollingBomb:
+        if obj.bomb_cooldown < ROLLING_BOMB_COOLDOWN * 400000000:
+            return
+    elif data_type == Mine:
+        if obj.bomb_cooldown < MINE_COOLDOWN * 400000000:
+            return
     direction = obj.look_direction
     if not 0 <= obj.x + direction[0] < WORLD_SIZE or not 0 <= obj.y + direction[1] < WORLD_SIZE:
         return
-    ObjectManager().create_object(obj.x + direction[0], obj.y + direction[1], Bomb, player=thrower_id, look_direction=direction)
+    ObjectManager().create_object(obj.x + direction[0], obj.y + direction[1], data_type, player=thrower_id, look_direction=direction)
     obj.time_at_bomb = time.time_ns()
 
 
@@ -47,7 +52,7 @@ class Player(Object):
 
 
 @dataclass
-class Bomb(Object):
+class RollingBomb(Object):
     player: int
     look_direction: tuple[int, int]
     time_since_spawn: int = 0
@@ -81,6 +86,24 @@ class Bomb(Object):
 
     def roll(self):
         ObjectManager().move_object(self.id, self.look_direction[0], self.look_direction[1])
+
+
+@dataclass
+class Mine(Object):
+    player: int
+    look_direction: tuple[int, int]
+    time_since_spawn: int = 0
+    time_at_spawn: int = 0
+
+    def __post_init__(self):
+        self.time_at_spawn = time.time_ns()
+        self.shape = ESC.blinking(ESC.red("O"))
+
+    def update(self):
+        self.time_since_spawn = time.time_ns() - self.time_at_spawn
+        t = 600000000
+        if self.time_since_spawn > 4 * t:
+            explode(self.id, 3)
 
 
 @dataclass
