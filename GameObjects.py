@@ -4,7 +4,7 @@ from ObjectManager import *
 import time
 
 ROLLING_BOMB_COOLDOWN = 4
-MINE_COOLDOWN = 4
+MINE_COOLDOWN = 2
 
 
 def place_or_throw_object(thrower_id, data_type):
@@ -18,8 +18,11 @@ def place_or_throw_object(thrower_id, data_type):
     direction = obj.look_direction
     if not 0 <= obj.x + direction[0] < WORLD_SIZE or not 0 <= obj.y + direction[1] < WORLD_SIZE:
         return
-    ObjectManager().create_object(obj.x + direction[0], obj.y + direction[1], data_type, player=thrower_id, look_direction=direction)
-    obj.time_at_bomb = time.time_ns()
+    if data_type != Wall:
+        ObjectManager().create_object(obj.x + direction[0], obj.y + direction[1], data_type, player=thrower_id, look_direction=direction)
+        obj.time_at_bomb = time.time_ns()
+    else:
+        ObjectManager().create_object(obj.x + direction[0], obj.y + direction[1], data_type)
 
 
 def explode(obj_id: int, size):
@@ -30,7 +33,7 @@ def explode(obj_id: int, size):
         for x in [(0, -2), (0, -1), (0, 1), (0, 2), (1, -1), (1, 0), (0, 0),
                   (1, 1), (2, 0), (-1, -1), (-1, 0), (-1, 1), (-2, 0)]:
             exp = om.create_object(min(max(x[0] + obj.x, 0), om.world_size-1), min(max(0, x[1] + obj.y), om.world_size-1),
-                                   Explosion)
+                                   Explosion, overwrite_tile_underneath=True)
 
 
 @dataclass

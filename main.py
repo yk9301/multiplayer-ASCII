@@ -43,7 +43,8 @@ def on_press(key):
                     publisher(f"{PLAYER}", PLAYER, "throw")
             case "r":
                 place_or_throw_object(PLAYER, Mine)
-                    
+            case "c":
+                place_or_throw_object(PLAYER, Wall)
     except AttributeError:
         print('special key {0} pressed'.format(key))
         if '{0}'.format(key) == 'Key.enter':

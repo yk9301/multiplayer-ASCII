@@ -44,8 +44,10 @@ class ObjectManager:
             self.world.coord[obj.x][obj.y] = self.world.default_char
             self.update_queue.put((obj.x, obj.y))
 
-    def create_object(self, x, y, datatype, id=None, **super_vars):
+    def create_object(self, x, y, datatype, id=None, overwrite_tile_underneath=False, **super_vars):
         obj = datatype(x, y, self.total_objects if id is None else id, **super_vars)
+        if not overwrite_tile_underneath and self.world.coord[x][y] != self.world.default_char:
+            return False
         self.total_objects += 1
         self.create_queue.put(obj)
         return obj.id

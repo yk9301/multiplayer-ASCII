@@ -79,12 +79,14 @@ def look_for_objects(objectManager: ObjectManager):
                 match objectManager.world.coord[x][y]:
                     case "w":
                         objectManager.create_object(x, y, Wall)
+                    case "b":
+                        objectManager.create_object(x, y, Mine) # uncommend when bomb can be created
                     case "T":
-                        objectManager.create_object(x, y, Player, 0)
+                        objectManager.create_object(x, y, Player, 0, overwrite_tile_underneath=True)
                     case "Y":
-                        objectManager.create_object(x, y, Player, 1)
+                        objectManager.create_object(x, y, Player, 1, overwrite_tile_underneath=True)
                     case "K":
-                        objectManager.create_object(x, y, Player, 2)
+                        objectManager.create_object(x, y, Player, 2, overwrite_tile_underneath=True)
 
 if __name__ == "__main__":
     create_map("map.txt", 10,10)
