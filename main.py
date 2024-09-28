@@ -9,7 +9,7 @@ from publisher import *
 import paho.mqtt.client as mqtt
 from ANSIEscapeSequences import ESC
 
-DEBUG = False
+DEBUG = True
 PLAYER = 0
 
 
@@ -36,7 +36,9 @@ def on_press(key):
             case "d":
                 mObjectManager.move_object(PLAYER, 1, 0)
             case "f":
-                throw_bomb(PLAYER)
+                place_or_throw_object(PLAYER, RollingBomb)
+            case "r":
+                place_or_throw_object(PLAYER, Mine)
     except AttributeError:
         print('special key {0} pressed'.format(key))
         if '{0}'.format(key) == 'Key.enter':
