@@ -78,9 +78,9 @@ def look_for_objects(objectManager: ObjectManager):
             for x in range(objectManager.world_size):
                 match objectManager.world.coord[x][y]:
                     case "w":
-                        objectManager.create_object(x, y, Wall)
+                        objectManager.create_object(x, y, Wall, overwrite_tile_underneath=True)
                     case "b":
-                        objectManager.create_object(x, y, Mine) # uncommend when bomb can be created
+                        objectManager.create_object(x, y, Mine, overwrite_tile_underneath=True) # uncommend when bomb can be created
                     case "T":
                         objectManager.create_object(x, y, Player, 0, overwrite_tile_underneath=True)
                     case "Y":

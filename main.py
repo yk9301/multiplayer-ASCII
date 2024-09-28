@@ -9,15 +9,15 @@ from publisher import *
 import paho.mqtt.client as mqtt
 from ANSIEscapeSequences import ESC
 
-DEBUG = True
-PLAYER = 1
+DEBUG = False
+PLAYER = 0
 
 
 
 def game_loop():
     cursor = Cursor()
     cursor.reprint_whole_map(mObjectManager, same_position=False)
-    print(mObjectManager.objectsDict, "2")
+    
     while True:
         cursor.print_changes(mObjectManager)
         for obj in mObjectManager.objectsDict:
@@ -40,11 +40,15 @@ def on_press(key):
             case "f":
                 place_or_throw_object(PLAYER, RollingBomb)
                 if DEBUG == False:
-                    publisher(f"{PLAYER}", PLAYER, "throw")
+                    publisher(str(PLAYER) + "f", PLAYER, "throw")
             case "r":
                 place_or_throw_object(PLAYER, Mine)
+                if DEBUG == False:
+                    publisher(str(PLAYER) + "r", PLAYER, "throw")
             case "c":
                 place_or_throw_object(PLAYER, Wall)
+                if DEBUG == False:
+                    publisher(str(PLAYER) + "c", PLAYER, "throw")
     except AttributeError:
         print('special key {0} pressed'.format(key))
         if '{0}'.format(key) == 'Key.enter':
@@ -132,7 +136,13 @@ def on_message(client, userdata, msg):
             x, y, id = array[0], array[1], array[2]
             mObjectManager.move_object(id, x - mObjectManager.objectsDict[id].x, y - mObjectManager.objectsDict[id].y)
         case "throw":
-            throw_bomb(int(message[0]))
+            if int(message[0]) != PLAYER:
+                if message[1] == "f":
+                    place_or_throw_object(int(message[0]), RollingBomb)
+                if message[1] == "r":
+                    place_or_throw_object(int(message[0]), Mine)
+                if message[1] == "c":
+                    place_or_throw_object(int(message[0]), Wall)
         case "map":
             if message == "0" and PLAYER == 1:
                 publisher(str(len(str(mObjectManager.world_size))) + str(mObjectManager.world_size) + mObjectManager.world_as_string, PLAYER, "map")
