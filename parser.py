@@ -79,8 +79,6 @@ def look_for_objects(objectManager: ObjectManager):
                 match objectManager.world.coord[x][y]:
                     case "w":
                         objectManager.create_object(x, y, Wall)
-                    case "b":
-                        objectManager.create_object(x, y, Bomb) # uncommend when bomb can be created
                     case "T":
                         objectManager.create_object(x, y, Player, 0)
                     case "Y":

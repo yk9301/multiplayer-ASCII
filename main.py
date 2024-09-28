@@ -9,13 +9,14 @@ from publisher import *
 import paho.mqtt.client as mqtt
 from ANSIEscapeSequences import ESC
 
-DEBUG = False
-PLAYER = 0
+DEBUG = True
+PLAYER = 1
 
 
 def game_loop():
     cursor = Cursor()
     cursor.reprint_whole_map(mObjectManager, same_position=False)
+    print(mObjectManager.objectsDict, "2")
     while True:
         cursor.print_changes(mObjectManager)
         for obj in mObjectManager.objectsDict:
@@ -37,6 +38,9 @@ def on_press(key):
                 mObjectManager.move_object(PLAYER, 1, 0)
             case "f":
                 throw_bomb(PLAYER)
+                if DEBUG == False:
+                    publisher(f"{PLAYER}", PLAYER, "bomb")
+                    
     except AttributeError:
         print('special key {0} pressed'.format(key))
         if '{0}'.format(key) == 'Key.enter':
@@ -96,6 +100,7 @@ def on_connect(client, userdata, flags, rc):
         print("Subscriber verbunden")
         client.subscribe("update")  # subscribtion for specific subject#
         client.subscribe("map")
+        client.subscribe("throw")
     else:
         print(f"Subscriber Verbindung fehlgeschlagen mit Code {rc}")
 
@@ -103,12 +108,14 @@ def message_parser(message):
     """enables bigger maps due to parsing coords > 10"""
     result = []
     acc = ""
+    
     for string in message:
         if string != "," and string != ";":
             acc += string
         if string == "," or string == ";":
             result.append(int(acc))
             acc = ""
+
     return result
 
 def on_message(client, userdata, msg):
@@ -119,10 +126,9 @@ def on_message(client, userdata, msg):
         case "update":
             array = message_parser(message)
             x, y, id = array[0], array[1], array[2]
-            if array[2] > 2:
-                mObjectManager.create_object(x, y, Bomb, id)
-            else:
-                mObjectManager.move_object(id,x - mObjectManager.objectsDict[id].x, y - mObjectManager.objectsDict[id].y)
+            mObjectManager.move_object(id, x - mObjectManager.objectsDict[id].x, y - mObjectManager.objectsDict[id].y)
+        case "throw":
+            throw_bomb(int(message[0]))
         case "map":
             if message == "0" and PLAYER == 1:
                 publisher(str(len(str(mObjectManager.world_size))) + str(mObjectManager.world_size) + mObjectManager.world_as_string, PLAYER, "map")
@@ -162,7 +168,7 @@ if __name__ == "__main__":
     else:
         mObjectManager.world.coord = map_parser("map.txt")
         look_for_objects(mObjectManager) # loads players if placed on map.txt
-
+        print(mObjectManager.objectsDict, "1")
 
     # multithreading start
     t2 = threading.Thread(target=game_loop)
