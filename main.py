@@ -71,7 +71,7 @@ def subscriber():
     client.enable_logger()
 
     # Broker-Adresse und Port
-    broker_address = "192.168.86.72" 
+    broker_address = "192.168.86.72"
     port = 1883  # Standard-MQTT-Port
 
     # callbacks
@@ -120,8 +120,7 @@ def on_message(client, userdata, msg):
             array = message_parser(message)
             x, y, id = array[0], array[1], array[2]
             if array[2] > 2:
-                pass
-                #mObjectManager.create_object(x, y, Bomb, id)
+                mObjectManager.create_object(x, y, Bomb, id)
             else:
                 mObjectManager.move_object(id,x - mObjectManager.objectsDict[id].x, y - mObjectManager.objectsDict[id].y)
         case "map":
