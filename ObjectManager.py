@@ -23,6 +23,8 @@ class ObjectManager:
     update_queue = SimpleQueue()
     delete_queue = SimpleQueue()
     create_queue = SimpleQueue()
+    map_shared = False
+    world_as_string = ""
 
     def __new__(cls):
         if not cls.instance:
