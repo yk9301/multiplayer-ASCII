@@ -44,11 +44,15 @@ class Player(Object):
 
     def __post_init__(self):
         if self.id == 0:
-            self.shape = '\033[91mT\033[0m'
+            self.shape = ESC.red("T")
         if self.id == 1:
-            self.shape = '\033[94mY\033[0m'
+            self.shape = ESC.blue("Y")
         if self.id == 2:
-            self.shape = '\033[93mK\033[0m'
+            self.shape = ESC.yellow("K")
+        if self.id == 3:
+            self.shape = ESC.cyan("C")
+        if self.id == 4:
+            self.shape = ESC.green("M")
 
     def update(self):
         self.bomb_cooldown = time.time_ns() - self.time_at_bomb

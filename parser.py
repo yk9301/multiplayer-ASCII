@@ -87,6 +87,10 @@ def look_for_objects(objectManager: ObjectManager):
                         objectManager.create_object(x, y, Player, 1, overwrite_tile_underneath=True)
                     case "K":
                         objectManager.create_object(x, y, Player, 2, overwrite_tile_underneath=True)
+                    case "C":
+                        objectManager.create_object(x, y, Player, 3, overwrite_tile_underneath=True)
+                    case "M":
+                        objectManager.create_object(x, y, Player, 4, overwrite_tile_underneath=True)
 
 if __name__ == "__main__":
     create_map("map.txt", 10,10)
