@@ -10,7 +10,7 @@ import paho.mqtt.client as mqtt
 from ANSIEscapeSequences import ESC
 
 DEBUG = False
-PLAYER = 0
+PLAYER = 1
 
 
 
@@ -83,7 +83,7 @@ def subscriber():
     client.enable_logger()
 
     # Broker-Adresse und Port
-    broker_address = "192.168.86.72"
+    broker_address = "10.126.65.77" 
     port = 1883  # Standard-MQTT-Port
 
     # callbacks
