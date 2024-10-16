@@ -17,7 +17,7 @@ class Object:
 class ObjectManager:
     instance = None
     objectsDict = dict()
-    total_objects = 3  # is used for the id, ids are always unique and never re-used.
+    total_objects = 5  # is used for the id, ids are always unique and never re-used.
     world_size = WORLD_SIZE
     world = Grid(WORLD_SIZE, WORLD_SIZE)
     update_queue = SimpleQueue()
